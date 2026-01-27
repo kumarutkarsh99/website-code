@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ClientIcons } from "../client-icons";
-
+import DOMPurify from "dompurify"
 interface ClientItem {
   logo?: string | null;
   name: string;
@@ -23,7 +23,8 @@ const TrustedCompanies: React.FC<Props> = ({ data }) => {
   const companies = Array.isArray(data?.meta?.client_items)
     ? data.meta.client_items
     : [];
-
+     const { title} = data;
+ const safeTitle = DOMPurify.sanitize(title || '');
   if (!companies.length) return null;
 
   return (
@@ -31,12 +32,18 @@ const TrustedCompanies: React.FC<Props> = ({ data }) => {
       <div className="container mx-auto px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Title from CMS */}
-          {data.title && (
-            <div
-              className="text-center mb-8"
-              dangerouslySetInnerHTML={{ __html: data.title }}
-            />
-          )}
+          {title && (
+              <div
+                className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3"
+                dangerouslySetInnerHTML={{ __html: safeTitle }}
+              />
+            )}
+
+            {/* {sub_title && (
+              <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
+                {sub_title}
+              </p>
+            )} */}
 
           <div className="relative overflow-hidden">
             <div className="absolute left-0 top-0 bottom-0 w-32 bg-linear-to-r from-white to-transparent z-10" />

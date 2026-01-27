@@ -14,6 +14,7 @@ import SliderSection from "./sections/SliderSection";
 import USPList from "./sections/USPList";
 import HeroSlider from "./sections/HeroSlider";
 import TrustedCompanies from "./sections/TrustedCompanies";
+import Testimonial from "./sections/Testimonial";
 
 
 
@@ -151,6 +152,11 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             return <USPList key={section.id} />;
          case "clientsLogoSlider":
        return <TrustedCompanies key={section.id} data={section} />;
+
+       case "testimonials":
+        return <Testimonial key={section.id} data={section} />;
+        
+       
           default:
             console.warn("Unhandled section:", section.section_key);
             return null;
