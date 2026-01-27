@@ -169,6 +169,7 @@ const WhyChooseTalentBridge = () => {
           })}
         </motion.div>
 
+
         {/* CTA */}
         <motion.div
           className="text-center mt-12"

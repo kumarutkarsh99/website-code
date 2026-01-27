@@ -5,6 +5,7 @@ import Image from "next/image";
 import Navigation from "@/app/components/Navigation";
 import Footer from "@/app/components/footer";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 const API_BASE = "http://72.61.229.100:3001";
 
@@ -131,9 +132,9 @@ export default function BlogsPage() {
                   : "/a1-selector-next/blog1.png";
 
                 return (
-                  <a
+                  <Link
                     key={blog.id}
-                    href={blog.link || `/blogs/${blog.id}`}
+                    href={`/blogs/${blog.id}`}
                     className="group bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition-all hover:-translate-y-1"
                   >
                     {/* Image */}
@@ -178,7 +179,7 @@ export default function BlogsPage() {
                         </span>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 );
               })}
           </div>

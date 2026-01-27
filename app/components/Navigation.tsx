@@ -56,11 +56,11 @@ const Navigation = () => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      transition={{ duration: 0.1, ease: "easeOut" }}
+      className={`fixed top-0 w-full z-50 transition-all duration-100 ${
         isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200"
-          : "bg-white"
+          ? "bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border-b border-white/30"
+          : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-6 lg:px-12">
