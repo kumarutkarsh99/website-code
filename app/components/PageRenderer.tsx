@@ -142,10 +142,10 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             return <LeadershipSection key={section.id} data={section} />;
           case "slider":
             // return <SliderSection key={section.id} data={section} />;
-            return <HeroSlider  key={section.id} data={section} />;
-            
-            case "usp_items":
-         return <USPList key={section.id} data={section} />;
+            return <HeroSlider key={section.id} data={section} />;
+
+          case "usp_items":
+            return <USPList key={section.id} />;
           default:
             console.warn("Unhandled section:", section.section_key);
             return null;
