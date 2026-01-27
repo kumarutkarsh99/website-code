@@ -4,8 +4,6 @@ import React from "react";
 import { Badge } from "@/app/components/ui/badge";
 import * as Icons from "lucide-react";
 
-
-
 interface StatItem {
   icon: keyof typeof Icons; // safer typing for icons
   label: string;
@@ -51,7 +49,9 @@ const StatsSection: React.FC<StatsSectionProps> = ({ data }) => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((item, index) => {
-            const Icon = (Icons as any)[item.icon] as React.FC<React.SVGProps<SVGSVGElement>>;
+            const Icon = (Icons as any)[item.icon] as React.FC<
+              React.SVGProps<SVGSVGElement>
+            >;
 
             return (
               <div
@@ -59,8 +59,6 @@ const StatsSection: React.FC<StatsSectionProps> = ({ data }) => {
                 className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-lg transition"
               >
                 <div className="flex justify-center mb-4 text-emerald-600">
-
-                  
                   {/* <Icon size={40} /> */}
                 </div>
 

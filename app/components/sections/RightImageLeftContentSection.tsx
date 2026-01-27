@@ -1,115 +1,99 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/app/components/ui/button";
-import Link from "next/link";
-import DOMPurify from "dompurify";
 import Image from "next/image";
+import { Button } from "@/app/components/ui/button";
+import { ArrowRight, CheckCircle } from "lucide-react";
 
-export default function LeftImageRightContentSection({ data }: any) {
-  const { title, sub_title, meta } = data;
+const UPLOAD_BASE_URL = "http://72.61.229.100:3001/uploads/sections/";
 
-  const safeTitle = DOMPurify.sanitize(title);
+export default function RightImageLeftContentSection({ data }: any) {
+  const { title, sub_title, meta, image } = data;
 
-  // 🔹 Extract bullet points from meta.content
-  const listItems =
-    meta?.content
-      ?.match(/<span[^>]*>(.*?)<\/span>/g)
-      ?.map((item: string) =>
-        item.replace(/<[^>]+>/g, "").trim()
-      ) || [];
+  // Resolve image safely
+  const rawImage = image || meta?.image;
+  const imageSrc =
+    rawImage && rawImage.startsWith("http")
+      ? rawImage
+      : rawImage
+        ? UPLOAD_BASE_URL + rawImage
+        : null;
 
   return (
-    <section className="pt-24 pb-16 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <section className="p-12 bg-white relative overflow-hidden scroll-reveal">
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center min-h-[80vh]">
-
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* ================= LEFT CONTENT ================= */}
           <div className="space-y-6">
+            {/* PRICE BADGE (static for now, CMS later if needed) */}
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white shadow-md border text-emerald-600 font-semibold text-sm">
+              Starting at $1,200 per placement
+            </div>
 
-            {/* TITLE */}
-            <div
-              className="text-3xl md:text-4xl font-bold text-gray-900"
-              dangerouslySetInnerHTML={{ __html: safeTitle }}
-            />
-
-            {/* SUB TITLE */}
-            {sub_title && (
-              <p className="text-gray-600 text-lg leading-relaxed max-w-xl">
-                {sub_title}
-              </p>
+            {/* TITLE (HTML FROM CMS) */}
+            {title && (
+              <div
+                className="text-3xl md:text-4xl font-bold text-gray-900"
+                dangerouslySetInnerHTML={{ __html: title }}
+              />
             )}
 
-            {/* BULLET LIST */}
-            {listItems.length > 0 && (
-              <div className="grid grid-cols-1 gap-3 pt-3">
-                {listItems.map((item: string, index: number) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="w-4 h-4 text-white"
-                      >
-                        <path d="M21.801 10A10 10 0 1 1 17 3.335" />
-                        <path d="m9 11 3 3L22 4" />
-                      </svg>
+            {/* DESCRIPTION */}
+            {sub_title && (
+              <p className="text-lg text-gray-600 max-w-xl">{sub_title}</p>
+            )}
+
+            {/* BULLET POINTS (from meta.content HTML) */}
+            {meta?.content && (
+              <div className="space-y-3 pt-2">
+                {meta.content
+                  .replace(/<\/?p>|<br\s*\/?>/g, "")
+                  .split("</span>")
+                  .filter(Boolean)
+                  .map((item: string, i: number) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 bg-emerald-500 text-white rounded-full p-1 mt-1" />
+                      <span
+                        className="text-gray-700 text-sm mt-1"
+                        dangerouslySetInnerHTML={{ __html: item }}
+                      />
                     </div>
-                    <span className="text-gray-700 text-base">
-                      {item}
-                    </span>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
 
             {/* CTA */}
-            {meta?.ctaPrimary?.url && (
+            {meta?.ctaPrimary && (
               <div className="pt-6">
-                <Link href={meta.ctaPrimary.url}>
-                  <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 shadow-lg hover:shadow-xl transition-all duration-300 group">
-                    {meta.ctaPrimary.label}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="ml-2 w-4 h-4 transition-transform duration-300 group-hover:translate-x-2"
-                    >
-                      <path d="M5 12h14" />
-                      <path d="m12 5 7 7-7 7" />
-                    </svg>
-                  </Button>
-                </Link>
+                <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 shadow-lg group">
+                  {meta.ctaPrimary.label}
+                  <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
               </div>
             )}
           </div>
 
           {/* ================= RIGHT IMAGE ================= */}
-          {meta?.image && (
-            <div className="relative">
-              <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-white/60 transform hover:scale-105 transition-transform duration-500">
+          {imageSrc && (
+            <div className="relative flex justify-center items-center">
+              {/* Soft circular glow (same as screenshot) */}
+              <div className="absolute h-[400px] w-[400px] rounded-full bg-emerald-200/50 blur-3xl" />
+
+              {/* Image card */}
+              <div className="relative h-[350px] w-[350px] rounded-full overflow-hidden shadow-xl bg-white">
                 <Image
-                  src={meta.image}
-                  alt={title || "Section image"}
-                  width={800}
-                  height={500}
-                  className="w-full h-[420px] object-cover"
+                  src={imageSrc}
+                  alt="Service image"
+                  width={600}
+                  height={600}
+                  className="w-full h-full object-contain"
+                  unoptimized
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/20 via-transparent to-transparent" />
               </div>
             </div>
           )}
-
         </div>
       </div>
     </section>
-  )}
+  );
+}

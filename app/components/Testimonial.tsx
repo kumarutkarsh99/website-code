@@ -45,7 +45,7 @@ const Testimonial = () => {
           }
         });
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
 
     if (sectionRef.current) {
@@ -61,7 +61,7 @@ const Testimonial = () => {
 
   useEffect(() => {
     if (!isAutoPlaying || testimonials.length === 0) return;
-    
+
     const timer = setInterval(() => {
       handleNext();
     }, 5000);
@@ -76,7 +76,9 @@ const Testimonial = () => {
 
   const handlePrev = () => {
     setDirection(-1);
-    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setActiveIndex(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length,
+    );
   };
 
   const handleDotClick = (index: number) => {
@@ -106,22 +108,30 @@ const Testimonial = () => {
   const activeTestimonial = testimonials[activeIndex];
 
   return (
-    <section 
+    <section
       ref={sectionRef}
       className="relative flex items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-100 overflow-hidden py-12 px-4"
     >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-64 h-64 bg-teal-100 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-emerald-100 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-100 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style={{ animationDelay: '4s' }}></div>
+        <div
+          className="absolute bottom-20 right-10 w-64 h-64 bg-emerald-100 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyan-100 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"
+          style={{ animationDelay: "4s" }}
+        ></div>
       </div>
 
       <div className="container mx-auto max-w-6xl relative z-10">
         {/* Section Header with Animation */}
         <div className="text-center mb-10">
           <div className="inline-block mb-3 px-5 py-1.5 bg-teal-100 rounded-full">
-            <span className="text-sm font-semibold text-teal-700 tracking-wide uppercase">Testimonials</span>
+            <span className="text-sm font-semibold text-teal-700 tracking-wide uppercase">
+              Testimonials
+            </span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-600">
             What Our Clients Say
@@ -135,15 +145,23 @@ const Testimonial = () => {
         <div className="relative max-w-4xl mx-auto mb-8">
           {/* Navigation Buttons */}
           <button
-            onClick={() => { handlePrev(); setUserPaused(true); setIsAutoPlaying(false); }}
+            onClick={() => {
+              handlePrev();
+              setUserPaused(true);
+              setIsAutoPlaying(false);
+            }}
             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 z-20 bg-white hover:bg-teal-600 text-gray-800 hover:text-white rounded-full p-2.5 shadow-lg hover:shadow-2xl transition-all duration-300 group"
             aria-label="Previous testimonial"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          
+
           <button
-            onClick={() => { handleNext(); setUserPaused(true); setIsAutoPlaying(false); }}
+            onClick={() => {
+              handleNext();
+              setUserPaused(true);
+              setIsAutoPlaying(false);
+            }}
             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 z-20 bg-white hover:bg-teal-600 text-gray-800 hover:text-white rounded-full p-2.5 shadow-lg hover:shadow-2xl transition-all duration-300 group"
             aria-label="Next testimonial"
           >
@@ -155,12 +173,14 @@ const Testimonial = () => {
             {testimonials.map((testimonial, index) => {
               const offset = index - activeIndex;
               const isActive = index === activeIndex;
-              
+
               return (
                 <div
                   key={testimonial.id}
                   className={`absolute inset-0 transition-all duration-700 ease-out ${
-                    isActive ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-95 pointer-events-none'
+                    isActive
+                      ? "opacity-100 scale-100 z-10"
+                      : "opacity-0 scale-95 pointer-events-none"
                   }`}
                   style={{
                     transform: `translateX(${offset * (direction > 0 ? 100 : -100)}px) scale(${isActive ? 1 : 0.9})`,
@@ -206,7 +226,10 @@ const Testimonial = () => {
                       <div className="relative group">
                         <div className="absolute inset-0 bg-gradient-to-r from-teal-500 to-emerald-600 rounded-full blur opacity-25 group-hover:opacity-75 transition-opacity duration-300"></div>
                         <img
-                          src={testimonial.avatar || "/a1-selector-next/placeholder.svg?height=64&width=64"}
+                          src={
+                            testimonial.avatar ||
+                            "/a1-selector-next/placeholder.svg?height=64&width=64"
+                          }
                           alt={testimonial.author_name}
                           className="relative w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-4 border-white shadow-lg"
                         />
@@ -219,7 +242,8 @@ const Testimonial = () => {
                           {testimonial.author_designation}
                           {testimonial.company && (
                             <span className="text-teal-600 font-semibold">
-                              {" "}at {testimonial.company}
+                              {" "}
+                              at {testimonial.company}
                             </span>
                           )}
                         </p>
@@ -229,7 +253,7 @@ const Testimonial = () => {
                 </div>
               );
             })}
-            
+
             {/* Spacer to maintain height */}
             <div className="opacity-0 pointer-events-none">
               <div className="bg-white rounded-2xl p-6 md:p-8">
@@ -275,10 +299,10 @@ const Testimonial = () => {
         {isAutoPlaying && (
           <div className="mt-4 max-w-md mx-auto">
             <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-teal-600 to-emerald-600 rounded-full animate-progress"
                 style={{
-                  animation: 'progress 5s linear infinite'
+                  animation: "progress 5s linear infinite",
                 }}
               ></div>
             </div>

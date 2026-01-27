@@ -1,83 +1,98 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/app/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import DOMPurify from "dompurify";
+import { Button } from "@/app/components/ui/button";
+import { CheckCircle } from "lucide-react";
 
-export default function LeftImageRightContentSection({ data }: any) {
-  const { title, sub_title, meta } = data;
-  const safeTitle = DOMPurify.sanitize(title);
+interface Props {
+  data: {
+    title?: string; // HTML
+    sub_title?: string; // text
+    image?: string | null;
+    meta?: {
+      image?: string | null;
+      badge?: string; // optional (e.g. pricing / label)
+      content?: string; // HTML
+      ctaPrimary?: {
+        url: string;
+        label: string;
+      };
+    };
+  };
+}
+
+export default function LeftImageRightContentSection({ data }: Props) {
+  const { title, sub_title, meta, image } = data;
+  const sectionImage = meta?.image || image;
 
   return (
-    <section className="pt-24 pb-10 relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 scroll-reveal">
+    <section className="py-20 bg-white">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
+          {/* ================= LEFT IMAGE ================= */}
+          {sectionImage && (
+            <div className="relative flex justify-center">
+              {/* soft halo */}
+              <div className="absolute w-[360px] h-[360px] rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-white blur-2xl" />
 
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+              {/* image card */}
+              <div className="relative z-10 w-[280px] h-[280px] rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden">
+                <Image
+                  src={sectionImage}
+                  alt="Section visual"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+          )}
 
-    {/* LEFT IMAGE */}
-{meta?.image && (
-  <div className="relative order-2 lg:order-1">
-    <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden border-4 border-white/50 transform hover:scale-105 transition-transform duration-500">
-      <Image
-        src={meta.image}
-        alt={title || "Section image"}
-        width={800}
-        height={500}
-        className="w-full h-[400px] object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/20 via-transparent to-transparent" />
-    </div>
-  </div>
-)}
-
-          {/* RIGHT CONTENT */}
-          <div className="space-y-6">
+          {/* ================= RIGHT CONTENT ================= */}
+          <div>
             {meta?.badge && (
-              <span className="inline-block px-4 py-2 rounded-full bg-white shadow text-sm font-semibold text-emerald-600">
+              <span className="inline-block mb-3 px-4 py-1 text-xs font-medium text-purple-600 bg-purple-100 rounded-full">
                 {meta.badge}
               </span>
             )}
 
-            <div
-              className="text-3xl md:text-4xl font-bold leading-tight"
-              dangerouslySetInnerHTML={{ __html: safeTitle }}
-            />
+            {title && (
+              <div
+                className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3"
+                dangerouslySetInnerHTML={{ __html: title }}
+              />
+            )}
 
             {sub_title && (
-              <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
+              <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
                 {sub_title}
               </p>
             )}
 
+            {/* CMS content */}
             {meta?.content && (
               <div
-                className="text-gray-700 max-w-xl"
+                className="
+                  prose max-w-none
+                  prose-p:text-sm prose-p:text-gray-700
+                  prose-h3:text-lg prose-h3:font-semibold prose-h3:text-gray-900
+                "
                 dangerouslySetInnerHTML={{ __html: meta.content }}
               />
             )}
 
-            {/* CTA BUTTONS */}
-            <div className="flex flex-wrap gap-4 pt-4">
-              {meta?.ctaPrimary?.url && (
+            {/* CTA */}
+            {meta?.ctaPrimary?.url &&
+              meta.ctaPrimary.url !== "#" &&
+              meta.ctaPrimary.url !== "@" && (
                 <Link href={meta.ctaPrimary.url}>
-                  <Button className="px-6 py-3">
-                    {meta.ctaPrimary.label}
+                  <Button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-sm rounded-lg shadow-md">
+                    {meta.ctaPrimary.label} →
                   </Button>
                 </Link>
               )}
-
-              {meta?.ctaSecondary?.url && (
-                <Link href={meta.ctaSecondary.url}>
-                  <Button variant="outline" className="px-6 py-3">
-                    {meta.ctaSecondary.label}
-                  </Button>
-                </Link>
-              )}
-            </div>
           </div>
-
         </div>
       </div>
     </section>

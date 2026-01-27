@@ -10,12 +10,11 @@ import ValuesSection from "./sections/ValuesSection";
 import LeadershipSection from "./sections/LeadershipSection";
 import LeftImageRightContentSection from "./sections/LeftImageRightContentSection";
 import RightImageLeftContentSectionn from "./sections/RightImageLeftContentSection";
-import MiddleSection from "./sections/MiddleSection";
-import HeroSlider from "./sections/HeroSection";
-import FaqSection from "./sections/FaqSection";
-import BlogsSection from "./sections/BlogsSection";
-import USPList from "./sections/USPList";
+import SliderSection from "./sections/SliderSection";
+
 import { useMemo } from "react";
+import MiddleSection from "./sections/MiddleSection";
+
 interface PageRendererProps {
   page: {
     title: string;
@@ -28,7 +27,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
     const handleScroll = () => {
       document.querySelectorAll(".scroll-reveal").forEach((el, i) => {
         if (el.getBoundingClientRect().top < window.innerHeight * 0.8) {
-          setIsVisible(prev => ({ ...prev, [i]: true }));
+          setIsVisible((prev) => ({ ...prev, [i]: true }));
           el.classList.add("visible");
         }
       });
@@ -65,6 +64,56 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
   return (
     <div className="min-h-screen bg-white overflow-hidden">
       <Navigation />
+      {/* {page.sections
+  .sort((a, b) => {
+    if (a.sort_order === b.sort_order) {
+      return a.id - b.id;
+    }
+    return a.sort_order - b.sort_order;
+  })
+  .map((section) => {
+    console.log(section, "section");
+
+    switch (section.section_key) {
+      case "hero":
+        return <HeroSection key={section.id} data={section} />;
+
+      case "leftImageRightContent":
+        return <LeftImageRightContentSection key={section.id} data={section} />;
+
+      case "rightImageLeftContent":
+        return <RightImageLeftContentSectionn key={section.id} data={section} />;
+
+      // case "job_search":
+      //   return <JobSearchSection key={section.id} data={section} />;
+
+      // case "job_list":
+      //   return <JobListSection key={section.id} data={section} />;
+
+      // case "career_success":
+      //   return <CareerSuccessSection key={section.id} data={section} />;
+
+      // case "profile_showcase":
+      //   return <ProfileShowcaseSection key={section.id} data={section} />;
+
+      case "stats":
+        return <StatsSection key={section.id} data={section} />;
+
+      case "timeline":
+        return <JourneySection key={section.id} data={section} />;
+
+      case "values":
+        return <ValuesSection key={section.id} data={section} />;
+
+      case "leadership":
+        return <LeadershipSection key={section.id} data={section} />;
+
+      default:
+        console.warn("Unhandled section:", section.section_key);
+        return null;
+    }
+  })} */}
+
       {renderedSections.map((section) => {
         console.log(section, "section");
 
@@ -73,17 +122,13 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             return <HeroSection key={section.id} data={section} />;
           case "leftImageRightContent":
             return (
-              <LeftImageRightContentSection
-                key={section.id}
-                data={section}
-              />
+              <LeftImageRightContentSection key={section.id} data={section} />
             );
+          case "middleContent":
+            return <MiddleSection key={section.id} data={section} />;
           case "rightImageLeftContent":
             return (
-              <RightImageLeftContentSectionn
-                key={section.id}
-                data={section}
-              />
+              <RightImageLeftContentSectionn key={section.id} data={section} />
             );
           case "stats":
             return <StatsSection key={section.id} data={section} />;
@@ -94,31 +139,12 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
           case "leadership":
             return <LeadershipSection key={section.id} data={section} />;
           case "slider":
-            return <HeroSlider key={section.id} data={section} />;
-          //  return <SliderSection key={section.id} data={section} />;
-          case "faq":
-            // Map API structure to FaqSection props
-            const faqData = {
-              faq_title: section.meta.faq_title || section.title,
-              sub_title: section.sub_title || null,
-              faq_items: section.meta.faq_items || [],
-            };
-            return <FaqSection key={section.id} data={faqData} />;
-          case "middleContent":
-            return <MiddleSection key={section.id} data={section} />;
-              case "blogs":
-            return <BlogsSection key={section.id} data={section} />;
-case "usp_items":
- return <USPList key={section.id} data={section} />;
-
-
-
+            return <SliderSection key={section.id} data={section} />;
           default:
             console.warn("Unhandled section:", section.section_key);
             return null;
         }
       })}
-
 
       {/* Animation Styles */}
       <style>{`
@@ -132,14 +158,14 @@ case "usp_items":
         }
         .animate-slideInLeft { animation: slideInLeft 0.8s ease-out forwards; }
         .animate-slideInRight { animation: slideInRight 0.8s ease-out forwards; }
-        .scroll-reveal {
-          opacity: 0;
-          transform: translateY(50px);
-          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        .scroll-reveal { 
+          opacity: 0; 
+          transform: translateY(50px); 
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
         }
-        .scroll-reveal.visible {
-          opacity: 1;
-          transform: translateY(0);
+        .scroll-reveal.visible { 
+          opacity: 1; 
+          transform: translateY(0); 
         }
       `}</style>
 
@@ -147,4 +173,5 @@ case "usp_items":
     </div>
   );
 };
+
 export default PageRenderer;

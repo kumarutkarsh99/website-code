@@ -8,12 +8,7 @@ import {
   CardTitle,
   CardContent,
 } from "@/app/components/ui/card";
-import {
-  Target,
-  Shield,
-  Lightbulb,
-  Handshake,
-} from "lucide-react";
+import { Target, Shield, Lightbulb, Handshake } from "lucide-react";
 
 /* -----------------------------------
    ICON MAP
@@ -73,7 +68,6 @@ const ValuesSection: React.FC<ValuesSectionProps> = ({ data }) => {
     <section className="py-20 bg-white relative overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
-
           {/* Header */}
           <div className="text-center mb-16 scroll-reveal">
             <Badge className="mb-4 bg-emerald-100 text-emerald-700 border-0 px-4 py-2">

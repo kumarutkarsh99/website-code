@@ -73,7 +73,7 @@ export default function ServiceRenderer({
           }
         });
       },
-      { threshold: 0.2, rootMargin: "0px 0px -100px 0px" }
+      { threshold: 0.2, rootMargin: "0px 0px -100px 0px" },
     );
 
     document
@@ -92,19 +92,19 @@ export default function ServiceRenderer({
   }
 
   const heroSection = pageData.sections.find(
-    (sec) => sec.section_key === "hero"
+    (sec) => sec.section_key === "hero",
   );
 
   const serviceSections = pageData.sections.filter(
-    (sec) => sec.section_key === "service"
+    (sec) => sec.section_key === "service",
   );
 
-    const leftImageRightContentSections = pageData.sections.filter(
-    (sec) => sec.section_key === "service"
+  const leftImageRightContentSections = pageData.sections.filter(
+    (sec) => sec.section_key === "service",
   );
 
-   const rightImageLeftContentSections = pageData.sections.filter(
-    (sec) => sec.section_key === "service"
+  const rightImageLeftContentSections = pageData.sections.filter(
+    (sec) => sec.section_key === "service",
   );
 
   return (
@@ -178,9 +178,7 @@ export default function ServiceRenderer({
                   </div>
 
                   <div className={reverse ? "lg:order-1" : ""}>
-                    <h3 className="text-3xl font-bold">
-                      {service.title}
-                    </h3>
+                    <h3 className="text-3xl font-bold">{service.title}</h3>
 
                     <p className="text-gray-600 mt-3">
                       {service.meta.description}
@@ -201,12 +199,6 @@ export default function ServiceRenderer({
           </div>
         </section>
       )}
-
-
-
-
-
-
 
       <Footer />
     </div>
