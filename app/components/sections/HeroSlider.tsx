@@ -1,12 +1,9 @@
 "use client";
 
-import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
-import Link from "next/link";
 import DOMPurify from "dompurify";
-import { Button } from "@/app/components/ui/button";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -15,7 +12,7 @@ import "swiper/css/pagination";
 interface HeroSliderSectionProps {
   data: {
     title?: string; // HTML
-    sub_title?: string;
+    sub_title?: string; // HTML
     meta?: {
       images?: string[];
       caption?: string;
@@ -27,80 +24,81 @@ interface HeroSliderSectionProps {
   };
 }
 
-export default function HeroSliderSection({ data }: HeroSliderSectionProps) {
-  const { title, sub_title, meta } = data;
-
-  const images: string[] = Array.isArray(meta?.images)
-    ? meta.images
-    : [];
-
-  const safeTitle = DOMPurify.sanitize(title || "");
+export default function HeroSlider({ data }: HeroSliderSectionProps) {
+  const images = data.meta?.images ?? [];
 
   if (!images.length) return null;
 
   return (
-    <section className="relative w-full h-[600px] overflow-hidden">
+    <div className="relative h-screen w-full">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         navigation
         pagination={{ clickable: true }}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        autoplay={{ delay: 5000 }}
         loop
         className="h-full w-full"
       >
         {images.map((img, index) => (
           <SwiperSlide key={index}>
-            <div className="relative h-[600px] w-full">
-              {/* Background image */}
+            <div className="relative h-full w-full">
+              {/* Background Image */}
               <Image
                 src={img}
-                alt={`Hero slide ${index + 1}`}
+                alt={`Hero Slide ${index + 1}`}
                 fill
                 priority={index === 0}
                 className="object-cover"
-                sizes="100vw"
               />
 
-              {/* Overlay */}
-              <div className="absolute inset-0 bg-black/40" />
-
-              {/* Content */}
+              {/* Overlay Content */}
               <div className="absolute inset-0 flex items-center">
-                <div className="max-w-6xl mx-auto px-6 text-white">
-                  {title && (
-                    <h1
-                      className="text-3xl md:text-5xl font-bold leading-tight mb-4"
-                      dangerouslySetInnerHTML={{ __html: safeTitle }}
-                    />
-                  )}
-
-                  {sub_title && (
-                    <p className="text-sm md:text-lg text-gray-200 max-w-xl mb-6">
-                      {sub_title}
-                    </p>
-                  )}
-
-                  {meta?.caption && (
-                    <p className="text-xs uppercase tracking-widest text-gray-300 mb-6">
-                      {meta.caption}
-                    </p>
-                  )}
-
-                  {meta?.cta?.url &&
-                    meta.cta.url !== "#" &&
-                    meta.cta.url !== "@" && (
-                      <Link href={meta.cta.url}>
-                        <Button className="px-6 py-3">
-                          {meta.cta.label}
-                        </Button>
-                      </Link>
+                <div className="container mx-auto px-16">
+                  {/* FIXED CONTENT COLUMN */}
+                  <div className="max-w-3xl flex flex-col items-start gap-4">
+                    {/* TITLE */}
+                    {data.title && (
+                      <h1
+                        className="bg-[#0F766E] text-white text-5xl md:text-6xl font-bold px-6 py-3 rounded-md inline-block w-auto max-w-full break-words"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(data.title),
+                        }}
+                      />
                     )}
+
+                    {/* SUB TITLE */}
+                    {data.sub_title && (
+                      <h2
+                        className="bg-[#0F766E] text-white text-5xl md:text-6xl font-bold px-6 py-3 rounded-md inline-block w-auto max-w-full break-words"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(data.sub_title),
+                        }}
+                      />
+                    )}
+
+                    {/* CAPTION */}
+                    {data.meta?.caption && (
+                      <p className="text-gray-900 text-xl font-bold mt-2 max-w-xl">
+                        {data.meta.caption}
+                      </p>
+                    )}
+
+                    {/* CTA BUTTON */}
+                    {data.meta?.cta?.label && data.meta?.cta?.url && (
+                      <a
+                        href={data.meta.cta.url}
+                        className="mt-6 bg-white text-[#0F766E] font-semibold px-6 py-3 rounded-md shadow hover:bg-gray-100 transition self-start"
+                      >
+                        {data.meta.cta.label}
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
-    </section>
+    </div>
   );
 }
