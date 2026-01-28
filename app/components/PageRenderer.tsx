@@ -16,8 +16,6 @@ import HeroSlider from "./sections/HeroSlider";
 import TrustedCompanies from "./sections/TrustedCompanies";
 import Testimonial from "./sections/Testimonial";
 
-
-
 import { useMemo } from "react";
 import MiddleSection from "./sections/MiddleSection";
 
@@ -150,13 +148,12 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
 
           case "usp_items":
             return <USPList key={section.id} />;
-         case "clientsLogoSlider":
-       return <TrustedCompanies key={section.id} data={section} />;
+          case "clientsLogoSlider":
+            return <TrustedCompanies key={section.id} data={section} />;
 
-       case "testimonials":
-        return <Testimonial key={section.id} data={section} />;
-        
-       
+          case "testimonials":
+            return <Testimonial key={section.id} data={section} />;
+
           default:
             console.warn("Unhandled section:", section.section_key);
             return null;
