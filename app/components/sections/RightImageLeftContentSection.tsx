@@ -10,15 +10,15 @@ const UPLOAD_BASE_URL = "http://72.61.229.100:3001/uploads/sections/";
 
 export default function RightImageLeftContentSection({ data }: any) {
   const { title, sub_title, meta, image } = data;
+const isValidImage = (img?: string | null) =>
+  typeof img === "string" && img.trim().length > 0;
 
-  // Resolve image safely
-  const rawImage = image || meta?.image;
-  const imageSrc =
-    rawImage && rawImage.startsWith("http")
-      ? rawImage
-      : rawImage
-        ? UPLOAD_BASE_URL + rawImage
-        : null;
+const sectionImage = isValidImage(meta?.image)
+  ? meta?.image
+  : isValidImage(image)
+  ? image
+  : null;
+  
 
   return (
     <section className="p-12 bg-white relative overflow-hidden scroll-reveal">
@@ -82,15 +82,15 @@ export default function RightImageLeftContentSection({ data }: any) {
           </div>
 
           {/* ================= RIGHT IMAGE ================= */}
-          {imageSrc && (
+         {meta?.image && sectionImage && (
             <div className="relative flex justify-center items-center">
               {/* Soft circular glow (same as screenshot) */}
               <div className="absolute h-[400px] w-[400px] rounded-full bg-emerald-200/50 blur-3xl" />
-
+ 
               {/* Image card */}
-              <div className="relative h-[350px] w-[350px] rounded-full overflow-hidden shadow-xl bg-white">
+              <div className="relative h-[350px] w-[400px] object-contain rounded-lg shadow-lg">
                 <Image
-                  src={imageSrc}
+                  src={sectionImage}
                   alt="Service image"
                   width={600}
                   height={600}

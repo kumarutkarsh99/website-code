@@ -10,6 +10,7 @@ interface MiddleSectionProps {
   data: {
     title?: string;
     sub_title?: string;
+    image?: string | null;
     meta?: {
       image?: string | null;
       content?: string;
@@ -26,19 +27,28 @@ interface MiddleSectionProps {
 }
 
 export default function MiddleSection({ data }: MiddleSectionProps) {
-  const { title, sub_title, meta } = data || {};
+  const { title, sub_title, meta, image } = data || {};
 
   const safeTitle = title ? DOMPurify.sanitize(title) : "";
   const safeContent = meta?.content
     ? DOMPurify.sanitize(meta.content)
     : "";
 
+  const isValidImage = (img?: string | null): img is string =>
+    typeof img === "string" && img.trim().length > 0;
+
+  const sectionImage = isValidImage(meta?.image)
+    ? meta.image
+    : isValidImage(image)
+    ? image
+    : null;
+
   return (
     <section className="py-16 bg-white">
       <div className="container max-w-6xl mx-auto px-6">
         <div className="max-w-7xl mx-auto">
 
-          {/* SECTION HEADER */}
+          {/* HEADER */}
           <div className="text-center mb-12">
             {safeTitle && (
               <div
@@ -54,82 +64,57 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
             )}
           </div>
 
-          {/* SERVICE ITEM */}
-          <div className="service-item-wrapper scroll-reveal visible">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
-              {/* VISUAL */}
-              <div className="flex justify-center items-center lg:order-1">
-                <div className="relative">
-                  <div className="w-72 h-72 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center overflow-hidden shadow-2xl">
-
-                    {/* glow blobs */}
-                    <div className="absolute inset-0 opacity-30">
-                      <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500 rounded-full blur-3xl" />
-                      <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500 rounded-full blur-2xl" />
-                    </div>
-
-                    {/* image or fallback */}
-                    {meta?.image ? (
-                      <div className="relative z-10 w-32 h-32 rounded-3xl overflow-hidden shadow-2xl">
-                        <Image
-                          src={meta.image}
-                          alt="Service"
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="relative z-10 w-32 h-32 bg-blue-500 rounded-3xl flex items-center justify-center text-white text-3xl font-bold shadow-2xl">
-                        IT
+            {/* IMAGE */}
+           {meta?.image && sectionImage && (
+                      <div className="relative flex justify-center items-center">
+                        {/* Soft circular glow (same as screenshot) */}
+                        <div className="absolute h-[400px] w-[400px] rounded-full bg-emerald-200/50 blur-3xl" />
+           
+                        {/* Image card */}
+                        <div className="relative h-[350px] w-[400px] object-contain rounded-lg shadow-lg">
+                          <Image
+                            src={sectionImage}
+                            alt="Service image"
+                            width={600}
+                            height={600}
+                            className="w-full h-full object-contain"
+                            unoptimized
+                          />
+                        </div>
                       </div>
                     )}
-                  </div>
-                </div>
-              </div>
 
-              {/* CONTENT */}
-              <div className="lg:order-2 space-y-5">
-
-                {/* Meta content (badge, title, description, bullets) */}
-                {safeContent && (
-                  <div
-                    className="
-                      prose prose-lg max-w-none
-                      prose-h3:text-sm prose-h3:font-semibold
-                      prose-h3:text-blue-700
-                      prose-h3:uppercase
-                      prose-h3:tracking-wide
-                      prose-h2:text-3xl prose-h2:font-bold prose-h2:text-gray-900
-                      prose-p:text-gray-600
-                    "
-                    dangerouslySetInnerHTML={{ __html: safeContent }}
-                  />
-                )}
-
-                {/* CTA */}
-                <div className="flex flex-wrap gap-4 pt-4">
-                {meta?.ctaPrimary?.url && (
-                   
-                    <Link href={meta.ctaPrimary.url}>
-                      <Button className="bg-blue-500 hover:opacity-90 text-white px-6 py-3 shadow-lg transition-all">
-                        {meta.ctaPrimary.label} →
-                      </Button>
-                    </Link>
-                 
-                )}
-                {meta?.ctaSecondary?.url && (
-                <Link href={meta.ctaSecondary.url}>
-                  <Button variant="outline" className="px-6 py-3">
-                    {meta.ctaSecondary.label}
-                  </Button>
-                </Link>
+            {/* CONTENT */}
+            <div className="space-y-5">
+              {safeContent && (
+                <div
+                  className="prose prose-lg max-w-none prose-p:text-gray-600"
+                  dangerouslySetInnerHTML={{ __html: safeContent }}
+                />
               )}
-               </div>
+
+              <div className="flex gap-4 pt-4">
+                {meta?.ctaPrimary?.url && (
+                  <Link href={meta.ctaPrimary.url}>
+                    <Button className="bg-blue-500 text-white px-6 py-3">
+                      {meta.ctaPrimary.label} →
+                    </Button>
+                  </Link>
+                )}
+
+                {meta?.ctaSecondary?.url && (
+                  <Link href={meta.ctaSecondary.url}>
+                    <Button variant="outline" className="px-6 py-3">
+                      {meta.ctaSecondary.label}
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </section>

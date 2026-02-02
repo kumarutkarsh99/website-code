@@ -50,7 +50,7 @@ const sectionImage = isValidImage(meta?.image)
               <div className="absolute w-[360px] h-[360px] rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-white blur-2xl" />
 
               {/* image card */}
-              <div className="relative z-10 w-[280px] h-[280px] rounded-full bg-white shadow-xl flex items-center justify-center overflow-hidden">
+              <div className="relative z-10 w-[280px] h-[280px] rounded-full bg-white shadow-xl flex items-center justify-center overflow-hiddenrelative h-[350px] w-[400px] object-contain rounded-lg shadow-lg">
                 <Image
                   src={sectionImage}
                   alt="Section visual"

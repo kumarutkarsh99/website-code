@@ -130,7 +130,7 @@ const safeTitle = title ? DOMPurify.sanitize(title) : "";
               ) : (
                 image && (
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/sections/${image}`}
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/clients/${image}`}
                     alt="Hero Image"
                     width={800}
                     height={500}

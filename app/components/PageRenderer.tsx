@@ -68,56 +68,6 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
   return (
     <div className="min-h-screen bg-white overflow-hidden">
       <Navigation />
-      {/* {page.sections
-  .sort((a, b) => {
-    if (a.sort_order === b.sort_order) {
-      return a.id - b.id;
-    }
-    return a.sort_order - b.sort_order;
-  })
-  .map((section) => {
-    console.log(section, "section");
-
-    switch (section.section_key) {
-      case "hero":
-        return <HeroSection key={section.id} data={section} />;
-
-      case "leftImageRightContent":
-        return <LeftImageRightContentSection key={section.id} data={section} />;
-
-      case "rightImageLeftContent":
-        return <RightImageLeftContentSectionn key={section.id} data={section} />;
-
-      // case "job_search":
-      //   return <JobSearchSection key={section.id} data={section} />;
-
-      // case "job_list":
-      //   return <JobListSection key={section.id} data={section} />;
-
-      // case "career_success":
-      //   return <CareerSuccessSection key={section.id} data={section} />;
-
-      // case "profile_showcase":
-      //   return <ProfileShowcaseSection key={section.id} data={section} />;
-
-      case "stats":
-        return <StatsSection key={section.id} data={section} />;
-
-      case "timeline":
-        return <JourneySection key={section.id} data={section} />;
-
-      case "values":
-        return <ValuesSection key={section.id} data={section} />;
-
-      case "leadership":
-        return <LeadershipSection key={section.id} data={section} />;
-
-      default:
-        console.warn("Unhandled section:", section.section_key);
-        return null;
-    }
-  })} */}
-
       {renderedSections.map((section) => {
         console.log(section, "section");
 
