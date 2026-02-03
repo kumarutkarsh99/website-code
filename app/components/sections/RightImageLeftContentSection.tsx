@@ -127,7 +127,7 @@ export default function RightImageLeftContentSection({
             </motion.ul>
 
             {/* CTA */}
-            {meta?.ctaPrimary && (
+            {meta?.ctaPrimary?.url && meta?.ctaPrimary?.label && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
