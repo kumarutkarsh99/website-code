@@ -1,24 +1,17 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
-import Link from "next/link";
 import DOMPurify from "dompurify";
+import { CheckCircle2, Code } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
+import { motion } from "framer-motion";
 
 interface MiddleSectionProps {
-  data: {
+  data?: {
     title?: string;
     sub_title?: string;
-    image?: string | null;
     meta?: {
-      image?: string | null;
       content?: string;
       ctaPrimary?: {
-        url: string;
-        label: string;
-      };
-      ctaSecondary?: {
         url: string;
         label: string;
       };
@@ -27,94 +20,142 @@ interface MiddleSectionProps {
 }
 
 export default function MiddleSection({ data }: MiddleSectionProps) {
-  const { title, sub_title, meta, image } = data || {};
+  if (!data) return null;
 
-  const safeTitle = title ? DOMPurify.sanitize(title) : "";
-  const safeContent = meta?.content
-    ? DOMPurify.sanitize(meta.content)
-    : "";
+  const { title, sub_title, meta } = data;
 
-  const isValidImage = (img?: string | null): img is string =>
-    typeof img === "string" && img.trim().length > 0;
+  // Parse CMS HTML safely (client-only)
+  const temp = document.createElement("div");
+  temp.innerHTML = meta?.content || "";
 
-  const sectionImage = isValidImage(meta?.image)
-    ? meta.image
-    : isValidImage(image)
-    ? image
-    : null;
+  const sectionHeading = temp.querySelector("h3")?.textContent || "";
+  const description = temp.querySelector("p")?.textContent || "";
+  const bullets = Array.from(temp.querySelectorAll("span")).map(
+    (el) => el.textContent || "",
+  );
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container max-w-6xl mx-auto px-6">
-        <div className="max-w-7xl mx-auto">
+    <section className="relative py-24 overflow-hidden bg-white">
+      <div className="relative z-10 container mx-auto px-6 lg:px-12 max-w-6xl">
+        {/* TOP HEADER */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className="text-center max-w-4xl mx-auto mb-10"
+        >
+          {title && (
+            <h2
+              className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(title),
+              }}
+            />
+          )}
 
-          {/* HEADER */}
-          <div className="text-center mb-12">
-            {safeTitle && (
-              <div
-                className="text-4xl md:text-5xl font-bold text-gray-900 mb-4"
-                dangerouslySetInnerHTML={{ __html: safeTitle }}
-              />
-            )}
+          {sub_title && (
+            <p className="text-lg lg:text-xl text-slate-600">{sub_title}</p>
+          )}
+        </motion.div>
 
-            {sub_title && (
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                {sub_title}
-              </p>
-            )}
-          </div>
+        {/* MAIN CONTENT */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* LEFT VISUAL */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true }}
+            className="relative flex justify-center"
+          >
+            <div className="absolute w-[300px] h-[300px] rounded-full bg-blue-200/60 blur-3xl" />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-
-            {/* IMAGE */}
-           {meta?.image && sectionImage && (
-                      <div className="relative flex justify-center items-center">
-                        {/* Soft circular glow (same as screenshot) */}
-                        <div className="absolute h-[400px] w-[400px] rounded-full bg-emerald-200/50 blur-3xl" />
-           
-                        {/* Image card */}
-                        <div className="relative h-[350px] w-[400px] object-contain rounded-lg shadow-lg">
-                          <Image
-                            src={sectionImage}
-                            alt="Service image"
-                            width={600}
-                            height={600}
-                            className="w-full h-full object-contain"
-                            unoptimized
-                          />
-                        </div>
-                      </div>
-                    )}
-
-            {/* CONTENT */}
-            <div className="space-y-5">
-              {safeContent && (
-                <div
-                  className="prose prose-lg max-w-none prose-p:text-gray-600"
-                  dangerouslySetInnerHTML={{ __html: safeContent }}
-                />
-              )}
-
-              <div className="flex gap-4 pt-4">
-                {meta?.ctaPrimary?.url && (
-                  <Link href={meta.ctaPrimary.url}>
-                    <Button className="bg-blue-500 text-white px-6 py-3">
-                      {meta.ctaPrimary.label} →
-                    </Button>
-                  </Link>
-                )}
-
-                {meta?.ctaSecondary?.url && (
-                  <Link href={meta.ctaSecondary.url}>
-                    <Button variant="outline" className="px-6 py-3">
-                      {meta.ctaSecondary.label}
-                    </Button>
-                  </Link>
-                )}
-              </div>
+            <div className="relative w-36 h-36 rounded-2xl bg-blue-500 shadow-xl flex items-center justify-center">
+              <Code className="w-12 h-12 text-white" />
             </div>
+          </motion.div>
 
-          </div>
+          {/* RIGHT CONTENT */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.12,
+                },
+              },
+            }}
+            className="space-y-4 max-w-xl"
+          >
+            <motion.span
+              variants={{
+                hidden: { opacity: 0, y: 15 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="inline-flex px-4 py-1.5 rounded-full bg-white shadow text-sm font-semibold text-blue-600"
+            >
+              Custom Quote
+            </motion.span>
+
+            <motion.h3
+              variants={{
+                hidden: { opacity: 0, y: 15 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="text-3xl lg:text-4xl font-bold text-slate-900"
+            >
+              {sectionHeading}
+            </motion.h3>
+
+            <motion.p
+              variants={{
+                hidden: { opacity: 0, y: 15 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              className="text-md text-slate-600"
+            >
+              {description}
+            </motion.p>
+
+            {/* BULLETS */}
+            <motion.ul className="space-y-3 pt-2">
+              {bullets.map((item, idx) => (
+                <motion.li
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "easeOut",
+                    delay: idx * 0.08,
+                  }}
+                  viewport={{ once: true }}
+                  className="flex items-center gap-4"
+                >
+                  <CheckCircle2 className="w-6 h-6 text-blue-500" />
+                  <span className="text-slate-700 font-medium">{item}</span>
+                </motion.li>
+              ))}
+            </motion.ul>
+
+            {/* CTA */}
+            {meta?.ctaPrimary && (
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Button className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-base">
+                  {meta.ctaPrimary.label} →
+                </Button>
+              </motion.div>
+            )}
+          </motion.div>
         </div>
       </div>
     </section>

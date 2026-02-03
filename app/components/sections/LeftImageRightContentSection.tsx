@@ -1,22 +1,25 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import DOMPurify from "dompurify";
 import { Button } from "@/app/components/ui/button";
 import { CheckCircle } from "lucide-react";
-import DOMPurify from "dompurify"
-import { useEffect } from "react";
-interface Props {
-  data: {
-    title?: string; // HTML
-    sub_title?: string; // text
+import { motion } from "framer-motion";
+
+interface LeftImageRightContentSectionProps {
+  data?: {
+    title?: string;
+    sub_title?: string;
     image?: string | null;
     meta?: {
-      image?: string | null;
-      badge?: string; // optional (e.g. pricing / label)
-      content?: string; // HTML
+      badge?: string;
+      content?: string;
       ctaPrimary?: {
+        url: string;
+        label: string;
+      };
+      ctaSecondary?: {
         url: string;
         label: string;
       };
@@ -24,106 +27,168 @@ interface Props {
   };
 }
 
-export default function LeftImageRightContentSection({ data }: any) {
-  const { title, sub_title, meta, image } = data;
- 
-  // console.log(sectionImage,'sectionimage')
-   const safeTitle = DOMPurify.sanitize(title || '');
-const isValidImage = (img?: string | null) =>
-  typeof img === "string" && img.trim().length > 0;
+const isValidHref = (href?: string) =>
+  typeof href === "string" && href.trim().length > 0;
 
-const sectionImage = isValidImage(meta?.image)
-  ? meta?.image
-  : isValidImage(image)
-  ? image
-  : null;
-   
+export default function LeftImageRightContentSection({
+  data,
+}: LeftImageRightContentSectionProps) {
+  if (!data) return null;
+
+  const { title, sub_title, meta, image } = data;
+
+  const safeTitle = title ? DOMPurify.sanitize(title) : "";
+
+  // Parse CMS content (client-side, safe)
+  const temp = document.createElement("div");
+  temp.innerHTML = meta?.content || "";
+
+  const description = temp.querySelector("p")?.textContent || "";
+
+  const bullets = Array.from(temp.querySelectorAll("span")).map(
+    (el) => el.textContent || "",
+  );
+
+  const imageUrl =
+    image && image.trim()
+      ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/${image}`
+      : null;
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-          {/* ================= LEFT IMAGE ================= */}
-          {meta?.image && sectionImage && (
-            <div className="relative flex justify-center">
-              {/* soft halo */}
-              <div className="absolute w-[360px] h-[360px] rounded-full bg-gradient-to-br from-purple-100 via-purple-50 to-white blur-2xl" />
+    <section className="relative py-24 overflow-hidden bg-white">
+      <div className="container mx-auto px-6 lg:px-12 max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* LEFT IMAGE */}
+          {imageUrl && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="relative flex justify-center"
+            >
+              {/* Glow */}
+              <div className="absolute w-[420px] h-[420px] rounded-full bg-emerald-200/50 blur-3xl" />
 
-              {/* image card */}
-              <div className="relative z-10 w-[280px] h-[280px] rounded-full bg-white shadow-xl flex items-center justify-center overflow-hiddenrelative h-[350px] w-[400px] object-contain rounded-lg shadow-lg">
+              {/* Image card */}
+              <div className="relative w-[360px] h-[360px] rounded-full bg-white shadow-xl overflow-hidden">
                 <Image
-                  src={sectionImage}
-                  alt="Section visual"
-                  fill
-                  className="object-cover"
+                  src={imageUrl}
+                  alt="Section image"
+                  width={600}
+                  height={600}
+                  className="w-full h-full object-contain"
+                  unoptimized
                 />
- 
-                
               </div>
-            </div>
+            </motion.div>
           )}
 
-          {/* ================= RIGHT CONTENT ================= */}
-          <div>
+          {/* RIGHT CONTENT */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: { staggerChildren: 0.12 },
+              },
+            }}
+            className="space-y-4 max-w-xl"
+          >
+            {/* BADGE */}
             {meta?.badge && (
-              <span className="inline-block mb-3 px-4 py-1 text-xs font-medium text-purple-600 bg-purple-100 rounded-full">
+              <motion.span
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="inline-flex px-4 py-1.5 rounded-full bg-white shadow text-sm font-semibold text-emerald-600"
+              >
                 {meta.badge}
-              </span>
+              </motion.span>
             )}
 
-            {title && (
-              <div
-                className="text-2xl md:text-3xl font-semibold text-gray-900 mb-3"
+            {/* TITLE */}
+            {safeTitle && (
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-3xl lg:text-4xl font-bold text-slate-900"
                 dangerouslySetInnerHTML={{ __html: safeTitle }}
               />
             )}
 
+            {/* SUBTITLE */}
             {sub_title && (
-              <p className="text-sm md:text-base text-gray-600 mb-6 leading-relaxed">
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-lg text-slate-600"
+              >
                 {sub_title}
-              </p>
+              </motion.p>
             )}
 
-            {/* CMS content */}
-            {meta?.content && (
-              <div
-                className="
-                  prose max-w-none
-                  prose-p:text-sm prose-p:text-gray-700
-                  prose-h3:text-lg prose-h3:font-semibold prose-h3:text-gray-900
-                "
-                dangerouslySetInnerHTML={{ __html: meta.content }}
-              />
+            {/* DESCRIPTION */}
+            {description && (
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-md text-slate-600"
+              >
+                {description}
+              </motion.p>
             )}
+
+            {/* BULLETS */}
+            <motion.ul className="space-y-2 pt-2">
+              {bullets.map((item, idx) => (
+                <motion.li
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "easeOut",
+                    delay: idx * 0.08,
+                  }}
+                  viewport={{ once: true }}
+                  className="flex items-start gap-4"
+                >
+                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-1">
+                    <CheckCircle className="w-4 h-4" />
+                  </span>
+                  <span className="text-slate-700 text-sm font-medium mt-1">
+                    {item}
+                  </span>
+                </motion.li>
+              ))}
+            </motion.ul>
 
             {/* CTA */}
-            {/* {meta?.ctaPrimary?.url &&
-              meta.ctaPrimary.url !== "#" &&
-              meta.ctaPrimary.url !== "@" && (
-                <Link href={meta.ctaPrimary.url}>
-                  <Button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-sm rounded-lg shadow-md">
-                    {meta.ctaPrimary.label} →
+            {isValidHref(meta?.ctaPrimary?.url) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Link href={meta!.ctaPrimary!.url}>
+                  <Button className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 shadow-md">
+                    {meta!.ctaPrimary!.label} →
                   </Button>
                 </Link>
-              )} */}
-                  <div className="flex flex-wrap gap-4 pt-4">
-              {meta?.ctaPrimary?.url && (
-                <Link href={meta.ctaPrimary.url}>
-                  <Button className="bg-emerald-500 hover:bg-emerald-600 px-6 py-3">
-                    {meta.ctaPrimary.label}
-                  </Button>
-                </Link>
-              )}
-
-              {meta?.ctaSecondary?.url && (
-                <Link href={meta.ctaSecondary.url}>
-                  <Button variant="outline" className="px-6 py-3">
-                    {meta.ctaSecondary.label}
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </div>
+              </motion.div>
+            )}
+          </motion.div>
         </div>
       </div>
     </section>

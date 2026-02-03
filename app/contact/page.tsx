@@ -26,10 +26,10 @@ type FormData = {
   company: string;
   role: string;
   message: string;
-  source:string;
+  source: string;
 };
- const API_BASE_URL='http://72.61.229.100:3001'
-//const API_BASE_URL='http://localhost:3001'
+
+const API_BASE_URL = "http://72.61.229.100:3001";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState<FormData>({
@@ -47,7 +47,7 @@ export default function ContactPage() {
   const [status, setStatus] = useState<"" | "success" | "error">("");
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -59,23 +59,20 @@ export default function ContactPage() {
     setStatus("");
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/leads/contact`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            phone: formData.phone,
-            company_name: formData.company,
-            role_to_hire: formData.role,
-            requirements: formData.message,
-            source:'Website – contact Page'
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/leads/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          company_name: formData.company,
+          role_to_hire: formData.role,
+          requirements: formData.message,
+          source: "Website – Contact Page",
+        }),
+      });
 
       if (!response.ok) throw new Error("API Error");
 
@@ -88,10 +85,9 @@ export default function ContactPage() {
         company: "",
         role: "",
         message: "",
-        source:"",
+        source: "",
       });
-    } catch (err) {
-      console.error("Lead submit error:", err);
+    } catch {
       setStatus("error");
     } finally {
       setLoading(false);
@@ -99,81 +95,80 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen bg-[#f3fbf8]">
       <Navigation />
 
-      <div className="min-h-[90vh] flex items-center justify-center relative py-20">
-        {/* Background blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 right-10 w-64 h-64 bg-emerald-100 rounded-full blur-3xl opacity-30 animate-pulse" />
-          <div
-            className="absolute bottom-10 left-10 w-64 h-64 bg-teal-100 rounded-full blur-3xl opacity-30 animate-pulse"
-            style={{ animationDelay: "2s" }}
-          />
-        </div>
-
-        <div className="container mx-auto px-6 lg:px-12 relative z-10">
-          <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-emerald-100">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <div className="min-h-[90vh] flex items-center justify-center py-20">
+        <div className="container mx-auto px-6 lg:px-12">
+          <div className="max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 p-10 md:p-14">
+            {/* Header */}
+            <div className="text-center mb-12">
+              <h1 className="text-3xl md:text-4xl font-semibold text-slate-900 mb-4">
                 Start Your Hiring Journey
-              </h2>
-              <p className="text-gray-600 text-lg">
-                Tell us about your requirements and we’ll get back to you.
+              </h1>
+              <p className="text-slate-600 text-lg max-w-2xl mx-auto">
+                Get in touch with our expert recruitment team. Tell us about
+                your needs, and we'll find the perfect match.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name */}
-              <div className="grid md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Names */}
+              <div className="grid md:grid-cols-2 gap-8">
                 <InputField
                   id="firstName"
                   label="First Name"
-                  icon={<User />}
+                  placeholder="Jane"
+                  icon={<User size={18} />}
                   value={formData.firstName}
                   onChange={handleChange}
                 />
                 <InputField
                   id="lastName"
                   label="Last Name"
-                  icon={<User />}
+                  placeholder="Doe"
+                  icon={<User size={18} />}
                   value={formData.lastName}
                   onChange={handleChange}
                 />
               </div>
 
               {/* Email / Phone */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-8">
                 <InputField
                   id="email"
-                  label="Email"
-                  icon={<Mail />}
+                  label="Email Address"
+                  placeholder="jane@company.com"
+                  icon={<Mail size={18} />}
                   value={formData.email}
                   onChange={handleChange}
                   type="email"
                 />
                 <InputField
                   id="phone"
-                  label="Phone"
-                  icon={<Phone />}
+                  label="Phone Number"
+                  placeholder="+1 (555) 000-0000"
+                  icon={<Phone size={18} />}
                   value={formData.phone}
                   onChange={handleChange}
                 />
               </div>
 
               {/* Company / Role */}
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-8">
                 <InputField
                   id="company"
-                  label="Company"
-                  icon={<Building2 />}
+                  label="Company Name"
+                  placeholder="Your Company Ltd."
+                  icon={<Building2 size={18} />}
                   value={formData.company}
                   onChange={handleChange}
                 />
                 <InputField
                   id="role"
                   label="Role to Hire"
-                  icon={<FileText />}
+                  placeholder="e.g. Senior Software Engineer"
+                  icon={<FileText size={18} />}
                   value={formData.role}
                   onChange={handleChange}
                 />
@@ -181,13 +176,17 @@ export default function ContactPage() {
 
               {/* Message */}
               <div>
-                <Label htmlFor="message">Message</Label>
+                <Label className="text-slate-700 mb-2 block">
+                  Additional Requirements
+                </Label>
                 <Textarea
                   id="message"
                   rows={5}
+                  placeholder="Describe specific skills, experience levels, or cultural fit requirements..."
                   value={formData.message}
                   onChange={handleChange}
                   required
+                  className="rounded-lg bg-white text-slate-500 border-slate-300 focus:border-slate-400 focus:ring-slate-400"
                 />
               </div>
 
@@ -195,23 +194,30 @@ export default function ContactPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full py-6 text-lg font-bold"
+                className="
+  w-full h-auto text-base font-medium
+  bg-gradient-to-r from-emerald-600 to-teal-600
+  hover:from-emerald-700 hover:to-teal-700
+  text-white rounded-lg
+  transition-colors cursor-pointer
+"
               >
-                {loading ? "Processing..." : "Submit Request"}
-                {!loading && <ArrowRight className="ml-2 h-5 w-5" />}
+                {loading ? "Submitting..." : "Submit Request"}
+                {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
               </Button>
 
+              {/* Status */}
               {status === "success" && (
                 <Status
-                  icon={<CheckCircle />}
-                  text="Request received! We'll be in touch."
+                  icon={<CheckCircle size={18} />}
+                  text="Request received! We'll be in touch soon."
                   type="success"
                 />
               )}
 
               {status === "error" && (
                 <Status
-                  icon={<AlertCircle />}
+                  icon={<AlertCircle size={18} />}
                   text="Something went wrong. Please try again."
                   type="error"
                 />
@@ -226,7 +232,7 @@ export default function ContactPage() {
   );
 }
 
-/* ---------- Reusable Components ---------- */
+/* ---------- Components ---------- */
 
 function InputField({
   id,
@@ -234,20 +240,33 @@ function InputField({
   icon,
   value,
   onChange,
+  placeholder,
   type = "text",
 }: any) {
   return (
     <div>
-      <Label htmlFor={id}>{label}</Label>
-      <div className="relative mt-2">
-        <span className="absolute left-3 top-3 text-gray-400">{icon}</span>
+      <Label htmlFor={id} className="text-slate-700 mb-2 block">
+        {label}
+      </Label>
+      <div className="relative">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          {icon}
+        </span>
         <Input
           id={id}
           type={type}
           value={value}
+          placeholder={placeholder}
           onChange={onChange}
-          className="pl-10 h-12"
           required
+          className="
+    h-12 pl-10 rounded-lg
+    bg-white text-slate-900
+    border border-slate-300
+    placeholder:text-slate-400
+    focus:border-slate-400
+    focus:ring-0
+  "
         />
       </div>
     </div>
@@ -257,14 +276,14 @@ function InputField({
 function Status({ icon, text, type }: any) {
   return (
     <div
-      className={`flex items-center justify-center gap-2 mt-4 p-4 rounded-lg ${
+      className={`flex items-center justify-center gap-2 p-4 rounded-lg ${
         type === "success"
-          ? "bg-emerald-50 text-emerald-700"
+          ? "bg-green-50 text-green-700"
           : "bg-red-50 text-red-700"
       }`}
     >
       {icon}
-      <p className="font-medium">{text}</p>
+      <p className="text-sm font-medium">{text}</p>
     </div>
   );
 }

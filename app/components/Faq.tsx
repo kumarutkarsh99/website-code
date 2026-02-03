@@ -56,7 +56,7 @@ const FAQ = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-gray-50 via-white to-amber-50/30 py-10 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section className="relative bg-white py-10 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Decorative blobs */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-100/40 rounded-full blur-3xl pointer-events-none" />
@@ -117,13 +117,13 @@ const FAQ = () => {
                   </div>
 
                   <div className="flex-1">
-                    <h3 className="text-sm sm:text-base font-semibold text-gray-900">
+                    <h3 className="text-sm sm:text-base font-semibold text-gray-900 mt-2">
                       {faq.question}
                     </h3>
                   </div>
 
                   <div
-                    className={`w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center transition-transform ${
+                    className={`w-7 h-7 mt-1 rounded-lg bg-gray-100 flex items-center justify-center transition-transform ${
                       isOpen ? "rotate-180 bg-gray-200" : ""
                     }`}
                   >
