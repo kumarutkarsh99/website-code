@@ -1,104 +1,172 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import DOMPurify from "dompurify";
 import { Button } from "@/app/components/ui/button";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
+import { motion } from "framer-motion";
 
-const UPLOAD_BASE_URL = "http://72.61.229.100:3001/uploads/sections/";
+interface RightImageLeftContentSectionProps {
+  data?: {
+    title?: string;
+    sub_title?: string;
+    image?: string | null;
+    meta?: {
+      content?: string;
+      ctaPrimary?: {
+        url: string;
+        label: string;
+      };
+    };
+  };
+}
 
-export default function RightImageLeftContentSection({ data }: any) {
+export default function RightImageLeftContentSection({
+  data,
+}: RightImageLeftContentSectionProps) {
+  if (!data) return null;
+
   const { title, sub_title, meta, image } = data;
-const isValidImage = (img?: string | null) =>
-  typeof img === "string" && img.trim().length > 0;
 
-const sectionImage = isValidImage(meta?.image)
-  ? meta?.image
-  : isValidImage(image)
-  ? image
-  : null;
-  
+  const safeTitle = title ? DOMPurify.sanitize(title) : "";
+
+  // Parse CMS HTML safely (client-only)
+  const temp = document.createElement("div");
+  temp.innerHTML = meta?.content || "";
+
+  const description = temp.querySelector("p")?.textContent || "";
+
+  const bullets = Array.from(temp.querySelectorAll("span")).map(
+    (el) => el.textContent || "",
+  );
+
+  const imageUrl =
+    image && image.trim()
+      ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/${image}`
+      : null;
 
   return (
-    <section className="p-12 bg-white relative overflow-hidden scroll-reveal">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* ================= LEFT CONTENT ================= */}
-          <div className="space-y-6">
-            {/* PRICE BADGE (static for now, CMS later if needed) */}
-         
-
-            {/* TITLE (HTML FROM CMS) */}
-            {title && (
-              <div
-                className="text-3xl md:text-4xl font-bold text-gray-900"
-                dangerouslySetInnerHTML={{ __html: title }}
+    <section className="relative py-24 overflow-hidden bg-white">
+      <div className="container mx-auto px-6 lg:px-12 max-w-6xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          {/* LEFT CONTENT */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: { staggerChildren: 0.12 },
+              },
+            }}
+            className="space-y-4 max-w-xl"
+          >
+            {/* TITLE */}
+            {safeTitle && (
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-3xl lg:text-4xl font-bold text-slate-900"
+                dangerouslySetInnerHTML={{ __html: safeTitle }}
               />
             )}
 
-            {/* DESCRIPTION */}
+            {/* SUBTITLE */}
             {sub_title && (
-              <p className="text-lg text-gray-600 max-w-xl">{sub_title}</p>
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-lg text-slate-600"
+              >
+                {sub_title}
+              </motion.p>
             )}
 
-            {/* BULLET POINTS (from meta.content HTML) */}
-            {meta?.content && (
-              <div className="space-y-3 pt-2">
-                {meta.content
-                  .replace(/<\/?p>|<br\s*\/?>/g, "")
-                  .split("</span>")
-                  .filter(Boolean)
-                  .map((item: string, i: number) => (
-                    <div key={i} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 bg-emerald-500 text-white rounded-full p-1 mt-1" />
-                      <span
-                        className="text-gray-700 text-sm mt-1"
-                        dangerouslySetInnerHTML={{ __html: item }}
-                      />
-                    </div>
-                  ))}
-              </div>
+            {/* DESCRIPTION */}
+            {description && (
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-md text-slate-600"
+              >
+                {description}
+              </motion.p>
             )}
 
-            <div className="flex flex-wrap gap-4 pt-4">
-                {meta?.ctaPrimary?.url && (
-                   
-                    <Link href={meta.ctaPrimary.url}>
-                      <Button className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 shadow-lg transition-all">
-                        {meta.ctaPrimary.label} →
-                      </Button>
-                    </Link>
-                 
-                )}
-                {meta?.ctaSecondary?.url && (
-                <Link href={meta.ctaSecondary.url}>
-                  <Button variant="outline" className="px-6 py-3">
-                    {meta.ctaSecondary.label}
+            {/* BULLETS */}
+            <motion.ul className="space-y-2 pt-2">
+              {bullets.map((item, idx) => (
+                <motion.li
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.4,
+                    ease: "easeOut",
+                    delay: idx * 0.08,
+                  }}
+                  viewport={{ once: true }}
+                  className="flex items-start gap-4"
+                >
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-1">
+                    <CheckCircle className="w-4 h-4" />
+                  </span>
+                  <span className="text-slate-700 text-sm font-medium mt-1">
+                    {item}
+                  </span>
+                </motion.li>
+              ))}
+            </motion.ul>
+
+            {/* CTA */}
+            {meta?.ctaPrimary?.url && meta?.ctaPrimary?.label && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                viewport={{ once: true }}
+              >
+                <Link href={meta.ctaPrimary.url}>
+                  <Button className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 shadow-md">
+                    {meta.ctaPrimary.label} →
                   </Button>
                 </Link>
-              )}
-               </div>
-          </div>
+              </motion.div>
+            )}
+          </motion.div>
 
-          {/* ================= RIGHT IMAGE ================= */}
-         {meta?.image && sectionImage && (
-            <div className="relative flex justify-center items-center">
-              {/* Soft circular glow (same as screenshot) */}
-              <div className="absolute h-[400px] w-[400px] rounded-full bg-emerald-200/50 blur-3xl" />
- 
+          {/* RIGHT IMAGE */}
+          {imageUrl && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="relative flex justify-center"
+            >
+              {/* Glow */}
+              <div className="absolute w-[420px] h-[420px] rounded-full bg-emerald-200/50 blur-3xl" />
+
               {/* Image card */}
-              <div className="relative h-[350px] w-[400px] object-contain rounded-lg shadow-lg">
+              <div className="relative w-[360px] h-[360px] rounded-full bg-white shadow-xl overflow-hidden">
                 <Image
-                  src={sectionImage}
-                  alt="Service image"
+                  src={imageUrl}
+                  alt="Section image"
                   width={600}
                   height={600}
                   className="w-full h-full object-contain"
                   unoptimized
                 />
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

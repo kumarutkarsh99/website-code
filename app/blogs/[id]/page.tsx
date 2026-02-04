@@ -19,6 +19,13 @@ interface Blog {
   updated_at: string;
   plain_description: string;
   badge: string | null;
+  link: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  meta_keywords: string | null;
+  og_title: string | null;
+  og_description: string | null;
+  og_image: string | null;
 }
 
 export default function BlogDetailPage() {
