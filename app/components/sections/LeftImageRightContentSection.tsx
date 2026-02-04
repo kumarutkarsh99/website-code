@@ -12,7 +12,8 @@ interface LeftImageRightContentSectionProps {
     title?: string;
     sub_title?: string;
     image?: string | null;
-    meta?: {
+    meta: {
+      image?: string;
       badge?: string;
       content?: string;
       ctaPrimary?: {
@@ -49,9 +50,10 @@ export default function LeftImageRightContentSection({
     (el) => el.textContent || "",
   );
 
-  const imageUrl =
-    image && image.trim()
-      ? `${process.env.NEXT_PUBLIC_IMAGE_URL}/uploads/${image}`
+  const imageUrl = meta.image
+    ? meta.image
+    : image && image.trim()
+      ? `http://72.61.229.100:3001/uploads/sections/${image}`
       : null;
 
   return (
@@ -68,10 +70,10 @@ export default function LeftImageRightContentSection({
               className="relative flex justify-center"
             >
               {/* Glow */}
-              <div className="absolute w-[420px] h-[420px] rounded-full bg-emerald-200/50 blur-3xl" />
+              <div className="absolute w-[420px] h-[420px] rounded-xl bg-emerald-200/50 blur-3xl" />
 
               {/* Image card */}
-              <div className="relative w-[360px] h-[360px] rounded-full bg-white shadow-xl overflow-hidden">
+              <div className="relative w-[360px] h-[360px] rounded-xl bg-white shadow-xl overflow-hidden">
                 <Image
                   src={imageUrl}
                   alt="Section image"

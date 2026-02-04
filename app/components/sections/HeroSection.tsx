@@ -1,20 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Briefcase,
-  Users,
-  Target,
-  CheckCircle2,
-  Calendar,
-} from "lucide-react";
+import { Briefcase, Users, Target, CheckCircle2, Calendar } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { motion, type Variants } from "framer-motion";
 
 type HeroSectionProps = {
   data?: {
-    image?: string;
+    image?: string; // filename from backend
     meta?: {
+      image?:string;
       badge?: string;
       description?: string;
       headline?: {
@@ -35,37 +30,29 @@ const iconMap: Record<string, React.ElementType> = {
   Target,
 };
 
-/* ---------------- ANIMATION VARIANTS (TS SAFE) ---------------- */
+/* ---------------- ANIMATION VARIANTS ---------------- */
 
 const containerVariants: Variants = {
   hidden: {},
   visible: {
-    transition: {
-      staggerChildren: 0.12,
-    },
+    transition: { staggerChildren: 0.12 },
   },
 };
 
 const fadeUpVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 24,
-  },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.16, 1, 0.3, 1], // easeOut (TS-safe)
+      ease: [0.16, 1, 0.3, 1],
     },
   },
 };
 
 const imageVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    scale: 0.95,
-  },
+  hidden: { opacity: 0, scale: 0.95 },
   visible: {
     opacity: 1,
     scale: 1,
@@ -81,19 +68,19 @@ export default function HeroSection({ data }: HeroSectionProps) {
 
   const { meta = {}, image } = data;
 
-  const getImageSrc = (img?: string) => {
-    if (!img) return null;
-    if (img.startsWith("http")) return img;
-
-    const baseUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
-    return baseUrl ? `${baseUrl.replace(/\/$/, "")}/uploads/${img}` : null;
-  };
-
-  const heroImageSrc = getImageSrc(image);
+  /**
+   * HERO IMAGE RULE (based on backend response)
+   * Hero image is a filename → served from /uploads/sections/
+   */
+  const heroImageSrc = meta.image
+    ? meta.image
+    : image
+      ? `http://72.61.229.100:3001/uploads/sections/${image}`
+      : null;
 
   return (
     <section className="relative min-h-[95vh] overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      {/* background glow */}
+      {/* BACKGROUND GLOW */}
       <div className="absolute inset-0">
         <div className="absolute top-28 right-24 w-60 h-60 bg-emerald-400/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-24 left-24 w-72 h-72 bg-teal-400/20 rounded-full blur-[140px]" />
@@ -108,7 +95,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
             animate="visible"
             className="space-y-4 max-w-xl"
           >
-            {/* Badge */}
+            {/* BADGE */}
             {meta.badge && (
               <motion.span
                 variants={fadeUpVariants}
@@ -119,7 +106,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
               </motion.span>
             )}
 
-            {/* Heading */}
+            {/* HEADING */}
             <motion.h1
               variants={fadeUpVariants}
               className="text-[44px] leading-tight lg:text-[40px] font-bold text-slate-900"
@@ -130,7 +117,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
               </span>
             </motion.h1>
 
-            {/* Description */}
+            {/* DESCRIPTION */}
             {meta.description && (
               <motion.p
                 variants={fadeUpVariants}
@@ -140,8 +127,8 @@ export default function HeroSection({ data }: HeroSectionProps) {
               </motion.p>
             )}
 
-            {/* Highlights */}
-            {meta.highlights && (
+            {/* HIGHLIGHTS */}
+            {meta.highlights?.length ? (
               <motion.ul
                 variants={containerVariants}
                 className="space-y-4 pt-2"
@@ -166,7 +153,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                   );
                 })}
               </motion.ul>
-            )}
+            ) : null}
 
             {/* CTA */}
             <motion.div
@@ -200,18 +187,19 @@ export default function HeroSection({ data }: HeroSectionProps) {
               transition={{
                 duration: 6,
                 repeat: Infinity,
-                ease: "easeInOut", // allowed here (not Variants)
+                ease: "easeInOut",
               }}
               className="relative w-full max-w-[400px] rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.12)] overflow-hidden"
             >
               {heroImageSrc && (
                 <Image
                   src={heroImageSrc}
-                  alt="Hero Image"
+                  alt="IT & Non-IT Recruitment"
                   width={700}
                   height={700}
                   className="w-full h-auto object-cover"
                   priority
+                  unoptimized
                 />
               )}
             </motion.div>

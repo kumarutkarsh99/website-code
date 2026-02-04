@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import DOMPurify from "dompurify";
 import { CheckCircle2, Code } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
@@ -20,19 +21,30 @@ interface MiddleSectionProps {
 }
 
 export default function MiddleSection({ data }: MiddleSectionProps) {
+  const [sectionHeading, setSectionHeading] = useState("");
+  const [description, setDescription] = useState("");
+  const [bullets, setBullets] = useState<string[]>([]);
+
   if (!data) return null;
 
   const { title, sub_title, meta } = data;
 
-  // Parse CMS HTML safely (client-only)
-  const temp = document.createElement("div");
-  temp.innerHTML = meta?.content || "";
+  useEffect(() => {
+    if (!meta?.content) return;
 
-  const sectionHeading = temp.querySelector("h3")?.textContent || "";
-  const description = temp.querySelector("p")?.textContent || "";
-  const bullets = Array.from(temp.querySelectorAll("span")).map(
-    (el) => el.textContent || "",
-  );
+    const temp = document.createElement("div");
+    temp.innerHTML = meta.content;
+
+    setSectionHeading(temp.querySelector("h3")?.textContent || "");
+
+    setDescription(temp.querySelector("p")?.textContent || "");
+
+    setBullets(
+      Array.from(temp.querySelectorAll("span")).map(
+        (el) => el.textContent || "",
+      ),
+    );
+  }, [meta?.content]);
 
   return (
     <section className="relative py-24 overflow-hidden bg-white">
@@ -82,11 +94,8 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
             whileInView="visible"
             viewport={{ once: true }}
             variants={{
-              hidden: {},
               visible: {
-                transition: {
-                  staggerChildren: 0.12,
-                },
+                transition: { staggerChildren: 0.12 },
               },
             }}
             className="space-y-4 max-w-xl"
@@ -101,25 +110,29 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
               Custom Quote
             </motion.span>
 
-            <motion.h3
-              variants={{
-                hidden: { opacity: 0, y: 15 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="text-3xl lg:text-4xl font-bold text-slate-900"
-            >
-              {sectionHeading}
-            </motion.h3>
+            {sectionHeading && (
+              <motion.h3
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-3xl lg:text-4xl font-bold text-slate-900"
+              >
+                {sectionHeading}
+              </motion.h3>
+            )}
 
-            <motion.p
-              variants={{
-                hidden: { opacity: 0, y: 15 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="text-md text-slate-600"
-            >
-              {description}
-            </motion.p>
+            {description && (
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-md text-slate-600"
+              >
+                {description}
+              </motion.p>
+            )}
 
             {/* BULLETS */}
             <motion.ul className="space-y-3 pt-2">
