@@ -161,7 +161,7 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
             )}
 
             {/* BULLET POINTS */}
-            {meta.points?.length ? (
+            {Array.isArray(meta.points) && meta.points.length > 0 ? (
               <motion.ul className="space-y-3 pt-2">
                 {meta.points.map((item, idx) => {
                   const Icon = getIcon(item.icon);
@@ -190,7 +190,7 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
             ) : null}
 
             {/* CTA */}
-            {meta.ctas?.length && (
+            {Array.isArray(meta.ctas) && meta.ctas.length > 0  && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}

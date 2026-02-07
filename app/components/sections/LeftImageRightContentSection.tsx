@@ -30,6 +30,7 @@ interface LeftImageRightContentSectionProps {
       };
       points?: Point[];
       ctas?: CTA[];
+      image:string;
     };
   };
 }
@@ -51,7 +52,7 @@ export default function LeftImageRightContentSection({
   const { meta, image } = data;
 
   const imageUrl = image
-    ? `http://72.61.229.100:3001/uploads/sections/${image}`
+    ? `${meta.image}`
     : null;
 
   return (
@@ -134,7 +135,7 @@ export default function LeftImageRightContentSection({
             )}
 
             {/* BULLETS */}
-            {meta.points?.length ? (
+            {Array.isArray(meta.points) && meta.points.length ? (
               <motion.ul className="space-y-2 pt-2">
                 {meta.points.map((item, idx) => {
                   const Icon = getIcon(item.icon);
@@ -165,7 +166,7 @@ export default function LeftImageRightContentSection({
             ) : null}
 
             {/* CTA */}
-            {meta.ctas?.length && (
+            {Array.isArray(meta.ctas) && meta.ctas.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
