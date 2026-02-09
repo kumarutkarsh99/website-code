@@ -31,6 +31,7 @@ interface RightImageLeftContentSectionProps {
       points?: Point[];
       ctas?: CTA[];
       image:string;
+       rightsectiondescription?: string;
     };
   };
 }
@@ -105,6 +106,18 @@ export default function RightImageLeftContentSection({
                 className="text-lg text-slate-600"
               >
                 {meta.heading.headingsubtitle}
+              </motion.p>
+            )}
+                 {/* RIGHT DESCRIPTION */}
+            {meta.rightsectiondescription && (
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 15 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                className="text-md text-slate-600"
+              >
+                {meta.rightsectiondescription}
               </motion.p>
             )}
 

@@ -21,6 +21,11 @@ import {
   Plane,
   Monitor,
   Wrench,
+  Cuboid,
+   
+  AlarmPlus,
+  Building,
+  Accessibility
 } from "lucide-react";
 
 export const CLIENT_ICONS: Record<string, { label: string; icon: React.ElementType }> =
@@ -46,4 +51,9 @@ export const CLIENT_ICONS: Record<string, { label: string; icon: React.ElementTy
   travel: { label: "Travel", icon: Plane },
   software: { label: "Software Product", icon: Monitor },
   services: { label: "Professional Services", icon: Wrench },
+    // ✅ USP icons (match API icon_key EXACTLY)
+  CuboidIcon: { label: "Successful Placements", icon: Cuboid },
+  BuildingIcon: { label: "Partner Companies", icon: Building },
+  AccessibilityIcon: { label: "Satisfaction Rate", icon: Accessibility },
+  AlarmPlusIcon: { label: "Years Experience", icon: AlarmPlus },
 };

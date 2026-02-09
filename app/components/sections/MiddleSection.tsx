@@ -19,6 +19,13 @@ type CTA = {
   variant?: "primary" | "outline";
 };
 
+type Service = {
+  badge?: string;
+  title?: string;
+  features?: Point[];
+  ctas?: CTA[];
+};
+
 interface MiddleSectionProps {
   data?: {
     image?: string;
@@ -28,11 +35,14 @@ interface MiddleSectionProps {
         headingTitle?: string;
         headingsubtitle?: string;
       };
-      points?: Point[];
-      ctas?: CTA[];
+      services?: Service[];
+
+      /* legacy support */
       rightsectionbadge?: string;
       rightsectiontitle?: string;
       rightsectiondescription?: string;
+      points?: Point[];
+      ctas?: CTA[];
     };
   };
 }
@@ -41,7 +51,7 @@ interface MiddleSectionProps {
 
 const getIcon = (icon?: string) => {
   if (!icon) return Icons.CheckCircle2;
-  return (Icons as any)[icon] || Icons.CheckCircle2;
+  return (Icons as Record<string, any>)[icon] || Icons.CheckCircle2;
 };
 
 /* ------------------------------------------------------------------------ */
@@ -55,16 +65,20 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
     ? `http://72.61.229.100:3001/uploads/clients/${image}`
     : null;
 
+  const hasServices =
+    Array.isArray(meta.services) && meta.services.length > 0;
+
   return (
     <section className="relative py-24 overflow-hidden bg-white">
       <div className="relative z-10 container mx-auto px-6 lg:px-12 max-w-6xl">
-        {/* TOP HEADER */}
+
+        {/* ---------------------------- TOP HEADER ---------------------------- */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center max-w-4xl mx-auto mb-10"
+          className="text-center max-w-4xl mx-auto mb-12"
         >
           {meta.badge && (
             <span className="inline-block mb-4 px-5 py-2 rounded-full bg-slate-100 text-slate-700 text-sm font-semibold">
@@ -85,13 +99,14 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
           )}
         </motion.div>
 
-        {/* MAIN CONTENT */}
+        {/* --------------------------- MAIN CONTENT --------------------------- */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+
           {/* LEFT IMAGE */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
             className="relative flex justify-center"
           >
@@ -116,109 +131,115 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={{
-              visible: { transition: { staggerChildren: 0.12 } },
-            }}
-            className="space-y-4 max-w-xl"
+            variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
+            className="space-y-6 max-w-xl"
           >
-            {/* RIGHT BADGE */}
-            {meta.rightsectionbadge && (
-              <motion.span
-                variants={{
-                  hidden: { opacity: 0, y: 15 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                className="inline-flex px-4 py-1.5 rounded-full bg-white shadow text-sm font-semibold text-blue-600"
-              >
-                {meta.rightsectionbadge}
-              </motion.span>
-            )}
 
-            {/* RIGHT TITLE */}
-            {meta.rightsectiontitle && (
-              <motion.h3
-                variants={{
-                  hidden: { opacity: 0, y: 15 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                className="text-3xl lg:text-4xl font-bold text-slate-900"
-              >
-                {meta.rightsectiontitle}
-              </motion.h3>
-            )}
+            {/* ===================== NEW SERVICES LOGIC ===================== */}
+            {hasServices ? (
+              meta.services!.map((service, sIdx) => (
+                <motion.div
+                  key={sIdx}
+                  className="space-y-4 pb-8 border-b last:border-b-0"
+                >
+                  {service.badge && (
+                    <span className="inline-flex px-4 py-1.5 rounded-full bg-white shadow text-sm font-semibold text-blue-600">
+                      {service.badge}
+                    </span>
+                  )}
 
-            {/* RIGHT DESCRIPTION */}
-            {meta.rightsectiondescription && (
-              <motion.p
-                variants={{
-                  hidden: { opacity: 0, y: 15 },
-                  visible: { opacity: 1, y: 0 },
-                }}
-                className="text-md text-slate-600"
-              >
-                {meta.rightsectiondescription}
-              </motion.p>
-            )}
+                  {service.title && (
+                    <h3 className="text-3xl font-bold text-slate-900">
+                      {service.title}
+                    </h3>
+                  )}
 
-            {/* BULLET POINTS */}
-            {Array.isArray(meta.points) && meta.points.length > 0 ? (
-              <motion.ul className="space-y-3 pt-2">
-                {meta.points.map((item, idx) => {
-                  const Icon = getIcon(item.icon);
+                  {Array.isArray(service.features) && (
+                    <ul className="space-y-3 pt-2">
+                      {service.features.map((item, idx) => {
+                        const Icon = getIcon(item.icon);
+                        return (
+                          <li key={idx} className="flex gap-4">
+                            <Icon className="w-6 h-6 text-blue-500" />
+                            <span className="text-slate-700 font-medium">
+                              {item.text}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
 
-                  return (
-                    <motion.li
-                      key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      transition={{
-                        duration: 0.4,
-                        ease: "easeOut",
-                        delay: idx * 0.08,
-                      }}
-                      viewport={{ once: true }}
-                      className="flex items-center gap-4"
-                    >
-                      <Icon className="w-6 h-6 text-blue-500" />
-                      <span className="text-slate-700 font-medium">
-                        {item.text}
-                      </span>
-                    </motion.li>
-                  );
-                })}
-              </motion.ul>
-            ) : null}
+                  {Array.isArray(service.ctas) && (
+                    <div className="pt-4 flex gap-3 flex-wrap">
+                      {service.ctas.map((cta, idx) => {
+                        const Icon = getIcon(cta.icon);
+                        return (
+                          <Button key={idx} asChild>
+                            <a href={cta.link || "#"}>
+                              <Icon className="w-4 h-4 mr-2" />
+                              {cta.label}
+                            </a>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </motion.div>
+              ))
+            ) : (
+              /* ===================== LEGACY LOGIC ===================== */
+              <>
+                {meta.rightsectionbadge && (
+                  <span className="inline-flex px-4 py-1.5 rounded-full bg-white shadow text-sm font-semibold text-blue-600">
+                    {meta.rightsectionbadge}
+                  </span>
+                )}
 
-            {/* CTA */}
-            {Array.isArray(meta.ctas) && meta.ctas.length > 0  && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 }}
-                viewport={{ once: true }}
-                className="pt-4"
-              >
-                {meta.ctas.map((cta, idx) => {
-                  const Icon = getIcon(cta.icon);
+                {meta.rightsectiontitle && (
+                  <h3 className="text-3xl font-bold text-slate-900">
+                    {meta.rightsectiontitle}
+                  </h3>
+                )}
 
-                  return (
-                    <Button
-                      key={idx}
-                      asChild
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 text-base"
-                    >
-                      <a
-                        href={cta.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Icon className="w-4 h-4 mr-2" />
-                        {cta.label}
-                      </a>
-                    </Button>
-                  );
-                })}
-              </motion.div>
+                {meta.rightsectiondescription && (
+                  <p className="text-slate-600">
+                    {meta.rightsectiondescription}
+                  </p>
+                )}
+
+                {Array.isArray(meta.points) && (
+                  <ul className="space-y-3 pt-2">
+                    {meta.points.map((item, idx) => {
+                      const Icon = getIcon(item.icon);
+                      return (
+                        <li key={idx} className="flex gap-4">
+                          <Icon className="w-6 h-6 text-blue-500" />
+                          <span className="text-slate-700 font-medium">
+                            {item.text}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+
+                {Array.isArray(meta.ctas) && (
+                  <div className="pt-4">
+                    {meta.ctas.map((cta, idx) => {
+                      const Icon = getIcon(cta.icon);
+                      return (
+                        <Button key={idx} asChild>
+                          <a href={cta.link}>
+                            <Icon className="w-4 h-4 mr-2" />
+                            {cta.label}
+                          </a>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
             )}
           </motion.div>
         </div>

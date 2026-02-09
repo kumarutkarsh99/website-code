@@ -96,7 +96,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             // return <SliderSection key={section.id} data={section} />;
             return <HeroSlider key={section.id} data={section} />;
           case "usp_items":
-            return <USPList key={section.id} />;
+            return <USPList key={section.id}  data={section} />;
           case "clientsLogoSlider":
             return <TrustedCompanies key={section.id} data={section} />;
           case "testimonials":
