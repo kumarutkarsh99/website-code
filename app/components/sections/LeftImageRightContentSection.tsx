@@ -30,7 +30,7 @@ interface LeftImageRightContentSectionProps {
       };
       points?: Point[];
       ctas?: CTA[];
-      image:string;
+      image: string;
     };
   };
 }
@@ -51,28 +51,26 @@ export default function LeftImageRightContentSection({
 
   const { meta, image } = data;
 
-  const imageUrl = image
-    ? `${meta.image}`
-    : null;
+  const imageUrl = image ? `${meta.image}` : null;
 
   return (
-    <section className="relative py-24 overflow-hidden bg-white">
+    <section className="relative py-16 lg:py-20 overflow-hidden bg-white">
       <div className="container mx-auto px-6 lg:px-12 max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
           {/* LEFT IMAGE */}
           {imageUrl && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true }}
               className="relative flex justify-center"
             >
               {/* Glow */}
-              <div className="absolute w-[420px] h-[420px] rounded-xl bg-emerald-200/50 blur-3xl" />
+              <div className="absolute w-[360px] h-[360px] rounded-xl bg-emerald-200/40 blur-3xl" />
 
               {/* Image card */}
-              <div className="relative w-[360px] h-[360px] rounded-xl bg-white shadow-xl overflow-hidden">
+              <div className="relative w-[320px] h-[320px] lg:w-[360px] lg:h-[360px] rounded-xl bg-white shadow-xl overflow-hidden">
                 <Image
                   src={imageUrl}
                   alt="Section image"
@@ -93,13 +91,13 @@ export default function LeftImageRightContentSection({
             variants={{
               visible: { transition: { staggerChildren: 0.12 } },
             }}
-            className="space-y-4 max-w-xl"
+            className="space-y-5 max-w-xl"
           >
             {/* BADGE */}
             {meta.badge && (
               <motion.span
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
+                  hidden: { opacity: 0, y: 16 },
                   visible: { opacity: 1, y: 0 },
                 }}
                 className="inline-flex px-4 py-1.5 rounded-full bg-white shadow text-sm font-semibold text-emerald-600"
@@ -112,10 +110,10 @@ export default function LeftImageRightContentSection({
             {meta.heading?.headingTitle && (
               <motion.h3
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
+                  hidden: { opacity: 0, y: 16 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                className="text-3xl lg:text-4xl font-bold text-slate-900"
+                className="text-3xl lg:text-4xl font-bold text-slate-900 leading-tight"
               >
                 {meta.heading.headingTitle}
               </motion.h3>
@@ -125,25 +123,25 @@ export default function LeftImageRightContentSection({
             {meta.heading?.headingsubtitle && (
               <motion.p
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
+                  hidden: { opacity: 0, y: 16 },
                   visible: { opacity: 1, y: 0 },
                 }}
-                className="text-lg text-slate-600"
+                className="text-base lg:text-lg text-slate-600"
               >
                 {meta.heading.headingsubtitle}
               </motion.p>
             )}
 
             {/* BULLETS */}
-            {Array.isArray(meta.points) && meta.points.length ? (
-              <motion.ul className="space-y-2 pt-2">
+            {Array.isArray(meta.points) && meta.points.length > 0 && (
+              <motion.ul className="space-y-3 pt-1">
                 {meta.points.map((item, idx) => {
                   const Icon = getIcon(item.icon);
 
                   return (
                     <motion.li
                       key={idx}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -16 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       transition={{
                         duration: 0.4,
@@ -151,28 +149,28 @@ export default function LeftImageRightContentSection({
                         delay: idx * 0.08,
                       }}
                       viewport={{ once: true }}
-                      className="flex items-start gap-4"
+                      className="flex items-start gap-3"
                     >
-                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-1">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-1 shrink-0">
                         <Icon className="w-4 h-4" />
                       </span>
-                      <span className="text-slate-700 text-sm font-medium mt-1">
+                      <span className="text-slate-700 text-sm font-medium leading-relaxed">
                         {item.text}
                       </span>
                     </motion.li>
                   );
                 })}
               </motion.ul>
-            ) : null}
+            )}
 
             {/* CTA */}
             {Array.isArray(meta.ctas) && meta.ctas.length > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="pt-4"
+                className="pt-6"
               >
                 {meta.ctas.map((cta, idx) => {
                   const Icon = getIcon(cta.icon);
@@ -187,8 +185,9 @@ export default function LeftImageRightContentSection({
                         href={cta.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2"
                       >
-                        <Icon className="w-4 h-4 mr-2" />
+                        <Icon className="w-4 h-4" />
                         {cta.label}
                       </a>
                     </Button>

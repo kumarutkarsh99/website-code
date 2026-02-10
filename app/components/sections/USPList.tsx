@@ -1,234 +1,161 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import DOMPurify from "dompurify";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  animate,
-  type Variants,
-} from "framer-motion";
-import { Award } from "lucide-react";
-import { useParams } from "next/navigation";
-import { CLIENT_ICONS } from "../../lib/clientIcons";
+import { motion, useInView } from "framer-motion";
+import { useRef, useState, useEffect, useMemo } from "react";
+import { Users, Trophy, Building2, TrendingUp } from "lucide-react";
 
-/* ---------------- Types ---------------- */
-
-type USPItem = {
-  key: string;
-  label: string;
-  description?: string;
-  finalNumber?: number;
-  colors?: string;
-  icon_key?: keyof typeof CLIENT_ICONS;
+/* ----------------------------------
+   ICON MAP (CMS → React)
+---------------------------------- */
+const iconMap: Record<string, any> = {
+  marketing: Users,
+  services: Trophy,
+  cloud: Building2,
+  logistics: TrendingUp,
 };
 
-type USPSection = {
-  title?: string;
-  sub_title?: string;
-  meta?: {
-    usp_items?: USPItem[];
-  };
-};
-
-interface UspSectionProps {
-  data?: {
-    image?: string;
-    meta?: {
-      badge?: string;
-      heading?: {
-        headingTitle?: string;
-        headingsubtitle?: string;
-      };
+/* ----------------------------------
+   PROPS TYPE (matches backend)
+---------------------------------- */
+type StatsSectionProps = {
+  data: {
+    title: string; // HTML string
+    sub_title: string;
+    meta: {
+      usp_items: {
+        key: string;
+        label: string;
+        icon_key: string;
+        description: string;
+        finalNumber: number;
+      }[];
     };
   };
-}
-
-/* ---------------- Animation ---------------- */
-
-const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-const containerVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.15 },
-  },
 };
 
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: EASE_OUT },
-  },
-};
+/* ----------------------------------
+   COMPONENT
+---------------------------------- */
+const StatsSection = ({ data }: StatsSectionProps) => {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+  const [counts, setCounts] = useState<number[]>([]);
 
-/* ---------------- Animated Number ---------------- */
+  const stats = useMemo(() => data.meta.usp_items, [data]);
 
-function AnimatedNumber({
-  value,
-  colors = "from-emerald-500 to-teal-500",
-}: {
-  value: number;
-  colors?: string;
-}) {
-  const motionValue = useMotionValue(0);
-  const rounded = useTransform(motionValue, (latest) =>
-    Math.floor(latest).toLocaleString(),
-  );
-
+  /* ----------------------------------
+     COUNT-UP ANIMATION
+  ---------------------------------- */
   useEffect(() => {
-    const controls = animate(motionValue, value, {
-      duration: 1.8,
-      ease: EASE_OUT,
+    if (!isInView) return;
+
+    setCounts(new Array(stats.length).fill(0));
+
+    stats.forEach((stat, index) => {
+      let current = 0;
+      const increment = stat.finalNumber / 50;
+
+      const timer = setInterval(() => {
+        current += increment;
+
+        if (current >= stat.finalNumber) {
+          current = stat.finalNumber;
+          clearInterval(timer);
+        }
+
+        setCounts((prev) => {
+          const updated = [...prev];
+          updated[index] = Math.floor(current);
+          return updated;
+        });
+      }, 30);
     });
-    return () => controls.stop();
-  }, [value]);
+  }, [isInView, stats]);
 
   return (
-    <motion.span
-      className={`bg-gradient-to-r ${colors} bg-clip-text text-transparent`}
+    <section
+      ref={sectionRef}
+      className="py-12 bg-gradient-to-br from-gray-50 to-emerald-50 relative overflow-hidden"
     >
-      {rounded}
-    </motion.span>
-  );
-}
+      {/* Background decorations */}
+      <div className="absolute inset-0">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-emerald-200/30 rounded-full blur-xl" />
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-teal-200/30 rounded-full blur-xl" />
+      </div>
 
-/* ---------------- Component ---------------- */
+      <div className="container mx-auto px-6 lg:px-12 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          {/* HEADER */}
+          <motion.div
+            className="text-center mb-10"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Title from CMS (HTML) */}
+            <div
+              className="text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 to-emerald-800 bg-clip-text text-transparent mb-4"
+              dangerouslySetInnerHTML={{ __html: data.title }}
+            />
 
-export default function USPList({ data }: UspSectionProps) {
-  const [uspSection, setUspSection] = useState<USPSection | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const params = useParams();
-  const slug = typeof params?.slug === "string" ? params.slug : "";
-
-  if (!data?.meta) return null;
-  const { meta } = data;
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const fetchUSP = async () => {
-      try {
-        const res = await fetch(
-          `http://72.61.229.100:3001/pages/slug/${slug}`,
-          { cache: "no-store" },
-        );
-        const json = await res.json();
-
-        const sections = json?.data?.result?.sections ?? [];
-        const usp = sections.find(
-          (sec: any) => sec.section_key === "usp_items",
-        );
-
-        setUspSection(usp ?? null);
-      } catch (err) {
-        console.error("USP fetch failed", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUSP();
-  }, [slug]);
-
-  if (loading || !uspSection) return null;
-
-  const safeTitle = uspSection.title
-    ? DOMPurify.sanitize(uspSection.title)
-    : "";
-
-  const uspItems = uspSection.meta?.usp_items ?? [];
-  if (!safeTitle && uspItems.length === 0) return null;
-
-  return (
-    <section className="relative p-12 bg-white overflow-hidden">
-      <div className="relative container mx-auto text-center">
-        {/* HEADER */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={containerVariants}
-        >
-          {meta.badge && (
-            <span className="inline-block mb-4 px-5 py-2 rounded-full bg-slate-100 text-slate-700 text-sm font-semibold">
-              {meta.badge}
-            </span>
-          )}
-
-          {meta.heading?.headingTitle && (
-            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-              {meta.heading.headingTitle}
-            </h2>
-          )}
-
-          {meta.heading?.headingsubtitle && (
-            <p className="text-lg text-slate-600">
-              {meta.heading.headingsubtitle}
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              {data.sub_title}
             </p>
-          )}
-        </motion.div>
+          </motion.div>
 
-        {/* USP CARDS */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={containerVariants}
-          className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        >
-          {uspItems.map((item) => {
-            const gradient =
-              item.colors ?? "from-emerald-500 to-teal-500";
+          {/* STATS GRID */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {stats.map((stat, index) => {
+              const Icon = iconMap[stat.icon_key];
 
-            const Icon =
-              (item.icon_key &&
-                CLIENT_ICONS[item.icon_key]?.icon) ||
-              Award;
+              const isPercentage =
+                stat.label.toLowerCase().includes("rate") ||
+                stat.finalNumber <= 100;
 
-            return (
-              <motion.div
-                key={item.key}
-                variants={itemVariants}
-                className="relative bg-white border rounded-2xl p-8 shadow-md"
-              >
-                {/* Icon */}
-                <div
-                  className={`absolute -top-6 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-gradient-to-r ${gradient} flex items-center justify-center text-white`}
+              return (
+                <motion.div
+                  key={stat.key}
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={isInView ? { y: 0, opacity: 1 } : {}}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="relative group"
                 >
-                  <Icon className="w-6 h-6" />
-                </div>
+                  <div className="bg-white/80 min-h-[280px] backdrop-blur-sm rounded-2xl p-6 text-center shadow-xl border border-white/50 group-hover:shadow-2xl transition-all duration-300">
+                    {/* ICON */}
+                    <motion.div
+                      className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl mb-4"
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      {Icon && <Icon className="w-8 h-8 text-white" />}
+                    </motion.div>
 
-                <div className="space-y-4 mt-6">
-                  {item.finalNumber !== undefined && (
-                    <p className="text-4xl font-extrabold">
-                      <AnimatedNumber
-                        value={item.finalNumber}
-                        colors={gradient}
-                      />
-                      <span className="ml-1">+</span>
-                    </p>
-                  )}
+                    {/* NUMBER */}
+                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-3">
+                      {isPercentage
+                        ? `${counts[index] ?? 0}%`
+                        : `${(counts[index] ?? 0).toLocaleString()}+`}
+                    </div>
 
-                  <h3 className="text-xl font-semibold">
-                    {item.label}
-                  </h3>
+                    {/* LABEL */}
+                    <div className="text-xl font-semibold text-gray-800 mb-3">
+                      {stat.label}
+                    </div>
 
-                  {item.description && (
-                    <p className="text-sm text-gray-600">
-                      {item.description}
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
-        </motion.div>
+                    {/* DESCRIPTION */}
+                    <div className="text-gray-600 leading-relaxed">
+                      {stat.description}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );
-}
+};
+
+export default StatsSection;

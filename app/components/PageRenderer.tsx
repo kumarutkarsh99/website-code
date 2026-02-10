@@ -18,6 +18,8 @@ import Testimonial from "./sections/Testimonial";
 import FaqSection from "./sections/FaqSection";
 import { useMemo } from "react";
 import MiddleSection from "./sections/MiddleSection";
+import WhyChooseUs from "./sections/WhyChooseUs";
+import Solutions from "./sections/SolutionsSection";
 
 interface PageRendererProps {
   page: {
@@ -96,12 +98,16 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             // return <SliderSection key={section.id} data={section} />;
             return <HeroSlider key={section.id} data={section} />;
           case "usp_items":
-            return <USPList key={section.id}  data={section} />;
+            return <USPList key={section.id} data={section} />;
           case "clientsLogoSlider":
             return <TrustedCompanies key={section.id} data={section} />;
           case "testimonials":
             return <Testimonial key={section.id} data={section} />;
-           case "faq":
+          case "why_choose":
+            return <WhyChooseUs key={section.id} data={section} />;
+          case "solutions":
+            return <Solutions key={section.id} data={section} />;
+          case "faq":
             // Map API structure to FaqSection props
             const faqData = {
               faq_title: section.meta.faq_title || section.title,

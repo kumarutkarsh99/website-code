@@ -52,7 +52,7 @@ const containerVariants: Variants = {
 };
 
 const fadeUpVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
@@ -82,27 +82,27 @@ export default function HeroSection({ data }: HeroSectionProps) {
     (image ? `http://72.61.229.100:3001/uploads/sections/${image}` : null);
 
   return (
-    <section className="relative min-h-[95vh] overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <section className="relative min-h-[85vh] lg:min-h-[90vh] overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50">
       {/* BACKGROUND GLOW */}
       <div className="absolute inset-0">
-        <div className="absolute top-28 right-24 w-60 h-60 bg-emerald-400/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-24 left-24 w-72 h-72 bg-teal-400/20 rounded-full blur-[140px]" />
+        <div className="absolute top-24 right-20 w-56 h-56 bg-emerald-400/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-teal-400/20 rounded-full blur-[140px]" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-6 lg:px-20 pb-20 pt-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* LEFT */}
+      <div className="relative z-10 container mx-auto px-6 lg:px-20 pt-20 lg:pt-24 pb-16 lg:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+          {/* LEFT CONTENT */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="space-y-4 max-w-xl"
+            className="space-y-5 max-w-xl"
           >
             {/* BADGE */}
             {meta.badge && (
               <motion.span
                 variants={fadeUpVariants}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white shadow-sm text-sm font-semibold text-black"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white shadow-sm text-sm font-semibold text-black"
               >
                 <Icons.Briefcase className="w-4 h-4 text-emerald-600" />
                 {meta.badge}
@@ -112,7 +112,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
             {/* HEADING */}
             <motion.h1
               variants={fadeUpVariants}
-              className="text-[44px] leading-tight lg:text-[40px] font-bold text-slate-900"
+              className="text-[36px] lg:text-[42px] font-bold text-slate-900 leading-tight"
             >
               <span className="block">{heading?.headingTitle}</span>
               <span className="block text-emerald-600">
@@ -125,7 +125,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
             {meta.description && (
               <motion.p
                 variants={fadeUpVariants}
-                className="text-lg text-slate-600 leading-relaxed"
+                className="text-base lg:text-lg text-slate-600 leading-relaxed"
               >
                 {meta.description}
               </motion.p>
@@ -135,7 +135,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
             {meta.points?.length ? (
               <motion.ul
                 variants={containerVariants}
-                className="space-y-4 pt-2"
+                className="space-y-3 pt-1"
               >
                 {meta.points.map((item, idx) => {
                   const Icon = getIcon(item.icon);
@@ -144,12 +144,12 @@ export default function HeroSection({ data }: HeroSectionProps) {
                     <motion.li
                       key={idx}
                       variants={fadeUpVariants}
-                      className="flex items-center gap-4"
+                      className="flex items-start gap-3"
                     >
-                      <span className="flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
-                        <Icon className="w-4 h-4" />
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-0.5">
+                        <Icon className="w-3.5 h-3.5" />
                       </span>
-                      <span className="text-slate-700 font-medium">
+                      <span className="text-slate-700 font-medium text-sm">
                         {item.text}
                       </span>
                     </motion.li>
@@ -158,11 +158,11 @@ export default function HeroSection({ data }: HeroSectionProps) {
               </motion.ul>
             ) : null}
 
-            {/* CTA BUTTONS */}
+            {/* CTAs */}
             {meta.ctas?.length && (
               <motion.div
                 variants={fadeUpVariants}
-                className="flex flex-wrap gap-4 pt-6"
+                className="flex flex-wrap gap-4 pt-5"
               >
                 {meta.ctas.map((cta, idx) => {
                   const Icon = getIcon(cta.icon);
@@ -184,8 +184,9 @@ export default function HeroSection({ data }: HeroSectionProps) {
                         href={cta.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2"
                       >
-                        <Icon className="w-4 h-4 mr-2" />
+                        <Icon className="w-4 h-4" />
                         {cta.label}
                       </a>
                     </Button>
@@ -210,7 +211,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                className="relative w-full max-w-[400px] rounded-2xl bg-white shadow-xl overflow-hidden"
+                className="relative w-full max-w-[360px] lg:max-w-[420px] rounded-2xl bg-white shadow-xl overflow-hidden"
               >
                 <Image
                   src={heroImageSrc}
