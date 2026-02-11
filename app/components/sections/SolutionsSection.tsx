@@ -33,6 +33,13 @@ const iconMap: Record<string, any> = {
 /* ----------------------------------
    PROPS TYPE (matches backend)
 ---------------------------------- */
+type CTA = {
+  label: string;
+  url?: string;
+  color?: string;
+  variant?: "primary" | "secondary";
+};
+
 type SolutionsSectionProps = {
   data: {
     meta: {
@@ -53,6 +60,8 @@ type SolutionsSectionProps = {
         title: string;
         description: string;
       }[];
+      primary_cta?: CTA;
+      secondary_cta?: CTA;
     };
   };
 };
@@ -65,7 +74,8 @@ const SolutionsSection = ({ data }: SolutionsSectionProps) => {
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
-  const { header, specializations, solutions } = data.meta;
+  const { header, specializations, solutions, primary_cta, secondary_cta } =
+    data.meta;
 
   const toggleAccordion = (index: number) => {
     setOpenAccordion(openAccordion === index ? null : index);
@@ -150,10 +160,17 @@ const SolutionsSection = ({ data }: SolutionsSectionProps) => {
               })}
             </motion.div>
 
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white px-7 py-3 rounded-lg font-semibold shadow-md flex items-center gap-2">
-              View All Industries
-              <ArrowRight className="w-4 h-4" />
-            </Button>
+            {primary_cta && (
+              <Button
+                asChild
+                className="bg-emerald-600 hover:bg-emerald-700 text-white px-7 py-3 rounded-lg font-semibold shadow-md flex items-center gap-2"
+              >
+                <a href={primary_cta.url || "#"}>
+                  {primary_cta.label}
+                  <ArrowRight className="w-4 h-4" />
+                </a>
+              </Button>
+            )}
           </motion.div>
 
           {/* RIGHT SIDE – SOLUTIONS ACCORDION */}
@@ -213,12 +230,15 @@ const SolutionsSection = ({ data }: SolutionsSectionProps) => {
               );
             })}
 
-            <Button
-              size="lg"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-semibold shadow-lg mt-5"
-            >
-              Schedule a Free Consultation
-            </Button>
+            {secondary_cta && (
+              <Button
+                asChild
+                size="lg"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-lg font-semibold shadow-lg mt-5"
+              >
+                <a href={secondary_cta.url || "#"}>{secondary_cta.label}</a>
+              </Button>
+            )}
           </motion.div>
         </div>
       </div>
