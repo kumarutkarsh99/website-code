@@ -152,11 +152,11 @@ export default function FaqSection({ data }: FaqSectionProps) {
         </div>
 
         {/* CTA */}
-        <div className="mt-10 text-center">
+        {/* <div className="mt-10 text-center">
           <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:scale-105 transition-all shadow-lg">
             Contact Us
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

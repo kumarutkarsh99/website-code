@@ -112,7 +112,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
             {/* HEADING */}
             <motion.h1
               variants={fadeUpVariants}
-              className="text-[36px] lg:text-[42px] font-bold text-slate-900 leading-tight"
+              className="text-[42px] lg:text-[52px] font-bold text-slate-900 leading-tight"
             >
               <span className="block">{heading?.headingTitle}</span>
               <span className="block text-emerald-600">
@@ -149,7 +149,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-0.5">
                         <Icon className="w-3.5 h-3.5" />
                       </span>
-                      <span className="text-slate-700 font-medium text-sm">
+                      <span className="text-slate-700 font-medium text-md">
                         {item.text}
                       </span>
                     </motion.li>
@@ -204,25 +204,33 @@ export default function HeroSection({ data }: HeroSectionProps) {
             className="flex justify-center"
           >
             {heroImageSrc && (
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                className="relative w-full max-w-[360px] lg:max-w-[420px] rounded-2xl bg-white shadow-xl overflow-hidden"
-              >
-                <Image
-                  src={heroImageSrc}
-                  alt="Hero Image"
-                  width={700}
-                  height={700}
-                  className="w-full h-auto object-cover"
-                  priority
-                  unoptimized
-                />
-              </motion.div>
+              <div className="relative">
+                <div className="absolute inset-0 -z-10 flex justify-center items-center">
+                  <div
+                    className="w-[320px] h-[320px] lg:w-[380px] lg:h-[380px]
+          bg-emerald-400/80 rounded-full blur-3xl"
+                  />
+                </div>
+                <motion.div
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="relative w-full max-w-[360px] lg:max-w-[420px] rounded-2xl bg-white shadow-xl overflow-hidden border-4 border-white"
+                >
+                  <Image
+                    src={heroImageSrc}
+                    alt="Hero Image"
+                    width={700}
+                    height={700}
+                    className="w-full h-auto object-cover"
+                    priority
+                    unoptimized
+                  />
+                </motion.div>
+              </div>
             )}
           </motion.div>
         </div>

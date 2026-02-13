@@ -18,7 +18,7 @@ interface TestimonialType {
 interface TestimonialSection {
   title?: string;
   sub_title?: string;
-  colors?: string; // 👈 USP-style gradient
+  colors?: string;
 }
 
 interface Props {
@@ -28,11 +28,7 @@ interface Props {
 /* ---------------- Component ---------------- */
 
 const Testimonial: React.FC<Props> = ({ data }) => {
-  const {
-    title,
-    sub_title,
-    colors = "from-emerald-500 to-teal-500", // ✅ fallback
-  } = data;
+  const { title, sub_title, colors = "from-emerald-500 to-teal-500" } = data;
 
   const safeTitle = title ? DOMPurify.sanitize(title) : "";
 
@@ -40,7 +36,7 @@ const Testimonial: React.FC<Props> = ({ data }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [userPaused, setUserPaused] = useState(false);
+  const [imageError, setImageError] = useState<Record<number, boolean>>({});
 
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -61,6 +57,17 @@ const Testimonial: React.FC<Props> = ({ data }) => {
     return () => clearInterval(timer);
   }, [activeIndex, isAutoPlaying, testimonials.length]);
 
+  /* ---------------- Helpers ---------------- */
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((word) => word[0].toUpperCase())
+      .join("");
+  };
+
   /* ---------------- Handlers ---------------- */
 
   const handleNext = () => {
@@ -76,7 +83,6 @@ const Testimonial: React.FC<Props> = ({ data }) => {
   const handleDotClick = (index: number) => {
     setDirection(index > activeIndex ? 1 : -1);
     setActiveIndex(index);
-    setUserPaused(true);
     setIsAutoPlaying(false);
   };
 
@@ -87,7 +93,7 @@ const Testimonial: React.FC<Props> = ({ data }) => {
   return (
     <section
       ref={sectionRef}
-      className={`relative py-20 px-6 bg-gradient-to-br   via-white overflow-hidden`}
+      className="relative py-20 px-6 bg-gradient-to-br via-white overflow-hidden"
     >
       <div className="container mx-auto max-w-6xl relative z-10">
         {/* Header */}
@@ -151,15 +157,34 @@ const Testimonial: React.FC<Props> = ({ data }) => {
                       “{t.message}”
                     </p>
 
+                    {/* Author */}
                     <div className="flex flex-col items-center gap-2">
-                      <img
-                        src={t.avatar || "/placeholder.svg"}
-                        className="w-14 h-14 rounded-full border-4 border-white shadow"
-                        alt={t.author_name}
-                      />
+                      {t.avatar && !imageError[t.id] ? (
+                        <img
+                          src={t.avatar}
+                          alt={t.author_name}
+                          onError={() =>
+                            setImageError((prev) => ({
+                              ...prev,
+                              [t.id]: true,
+                            }))
+                          }
+                          className="w-14 h-14 rounded-full border-4 border-white shadow object-cover"
+                        />
+                      ) : (
+                        <div
+                          className={`w-14 h-14 rounded-full border-4 border-white shadow
+                            bg-gradient-to-r ${colors}
+                            flex items-center justify-center text-white font-semibold`}
+                        >
+                          {getInitials(t.author_name)}
+                        </div>
+                      )}
+
                       <p className="font-semibold text-gray-900">
                         {t.author_name}
                       </p>
+
                       <p className="text-sm text-gray-600">
                         {t.author_designation}
                         {t.company && (
@@ -203,16 +228,6 @@ const Testimonial: React.FC<Props> = ({ data }) => {
           )}
         </div>
       </div>
-
-      {/* <style>{`
-        .animate-progress {
-          animation: progress 5s linear infinite;
-        }
-        @keyframes progress {
-          from { width: 0%; }
-          to { width: 100%; }
-        }
-      `}</style> */}
     </section>
   );
 };

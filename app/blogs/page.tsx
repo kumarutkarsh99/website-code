@@ -109,7 +109,7 @@ export default function BlogsPage() {
               placeholder="Search articles..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="placeholder:text-gray-400 w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 shadow focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="placeholder:text-gray-400 w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 shadow focus:ring-2 focus:ring-emerald-500 focus:outline-none focus:text-black"
             />
           </div>
         </section>

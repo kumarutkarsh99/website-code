@@ -67,7 +67,7 @@ export default function LeftImageRightContentSection({
               className="relative flex justify-center"
             >
               {/* Glow */}
-              <div className="absolute w-[360px] h-[360px] rounded-xl bg-emerald-200/40 blur-3xl" />
+              <div className="absolute w-[360px] h-[360px] rounded-xl bg-emerald-200/80 blur-3xl" />
 
               {/* Image card */}
               <div className="relative w-[320px] h-[320px] lg:w-[360px] lg:h-[360px] rounded-xl bg-white shadow-xl overflow-hidden">
@@ -154,7 +154,7 @@ export default function LeftImageRightContentSection({
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-white mt-1 shrink-0">
                         <Icon className="w-4 h-4" />
                       </span>
-                      <span className="text-slate-700 text-sm font-medium leading-relaxed">
+                      <span className="text-slate-700 text-md font-medium leading-relaxed">
                         {item.text}
                       </span>
                     </motion.li>
