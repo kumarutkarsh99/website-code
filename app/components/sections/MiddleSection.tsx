@@ -107,7 +107,7 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
             viewport={{ once: true }}
             className="relative flex justify-center"
           >
-            <div className="absolute w-[360px] h-[360px] rounded-xl bg-emerald-200/80 blur-3xl" />
+            <div className="absolute w-[360px] h-[360px] rounded-xl bg-emerald-200/60 blur-3xl" />
 
             {imageSrc && (
               <div className="relative w-[320px] h-[320px] lg:w-[360px] lg:h-[360px] rounded-2xl overflow-hidden shadow-xl bg-white">
