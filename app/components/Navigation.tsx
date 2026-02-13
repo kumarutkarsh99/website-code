@@ -63,14 +63,14 @@ const Navigation = () => {
           : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-6 lg:px-12">
+      <div className="container mx-auto px-6 lg:px-12 pt-1">
         <div className="max-w-7xl mx-auto flex items-center justify-between py-2">
           {/* Logo */}
           <div className="flex items-center">
             <img
-              src="/a1-selector-next/logo2.jpg"
+              src="/a1-selector-next/logo.jpg"
               alt="Logo"
-              className="w-12 h-12 object-contain rounded-sm"
+              className="w-12 h-12 object-contain rounded-full"
             />
             <a
               href="/a1-selector-next/"
@@ -156,7 +156,11 @@ const Navigation = () => {
             className="lg:hidden p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X /> : <Menu />}
+            {isMobileMenuOpen ? (
+              <X className="text-gray-700" />
+            ) : (
+              <Menu className="text-gray-700" />
+            )}
           </button>
         </div>
       </div>

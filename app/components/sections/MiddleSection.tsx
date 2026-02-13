@@ -85,13 +85,13 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
           )}
 
           {meta.heading?.headingTitle && (
-            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-3 leading-tight">
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-3 leading-tight">
               {meta.heading.headingTitle}
             </h2>
           )}
 
           {meta.heading?.headingsubtitle && (
-            <p className="text-base lg:text-lg text-slate-600">
+            <p className="text-base xl:text-xl text-slate-600">
               {meta.heading.headingsubtitle}
             </p>
           )}
@@ -107,16 +107,16 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
             viewport={{ once: true }}
             className="relative flex justify-center"
           >
-            <div className="absolute w-[360px] h-[360px] rounded-full bg-blue-200/50 blur-3xl" />
+            <div className="absolute w-[360px] h-[360px] rounded-xl bg-emerald-200/80 blur-3xl" />
 
             {imageSrc && (
-              <div className="relative w-[320px] lg:w-[360px] rounded-2xl overflow-hidden shadow-xl bg-white">
+              <div className="relative w-[320px] h-[320px] lg:w-[360px] lg:h-[360px] rounded-2xl overflow-hidden shadow-xl bg-white">
                 <Image
                   src={imageSrc}
                   alt="Middle Section"
-                  width={500}
-                  height={500}
-                  className="w-full h-auto object-cover"
+                  width={600}
+                  height={600}
+                  className="w-full h-full object-contain"
                   unoptimized
                 />
               </div>
@@ -196,13 +196,13 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
                 )}
 
                 {meta.rightsectiontitle && (
-                  <h3 className="text-2xl font-bold text-slate-900">
+                  <h3 className="text-3xl font-bold text-slate-900">
                     {meta.rightsectiontitle}
                   </h3>
                 )}
 
                 {meta.rightsectiondescription && (
-                  <p className="text-slate-600 text-sm leading-relaxed">
+                  <p className="text-slate-600 text-lg leading-relaxed">
                     {meta.rightsectiondescription}
                   </p>
                 )}
@@ -214,7 +214,7 @@ export default function MiddleSection({ data }: MiddleSectionProps) {
                       return (
                         <li key={idx} className="flex gap-3">
                           <Icon className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
-                          <span className="text-slate-700 font-medium text-sm">
+                          <span className="text-slate-700 font-medium text-md">
                             {item.text}
                           </span>
                         </li>
