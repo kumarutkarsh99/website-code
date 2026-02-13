@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import DOMPurify from "dompurify";
 import Image from "next/image";
 import { ClientIcons } from "../client-icons";
 
@@ -21,7 +20,7 @@ interface Props {
   };
 }
 
-/* ---------------- Helper ---------------- */
+/* ---------------- Icon Resolver ---------------- */
 
 const getClientIcon = (key?: string) => {
   if (!key) return ClientIcons.startup;
@@ -35,92 +34,86 @@ const TrustedCompanies: React.FC<Props> = ({ data }) => {
     ? data.meta.client_items
     : [];
 
-  const safeTitle = DOMPurify.sanitize(data?.title || "");
-
   if (!companies.length) return null;
-  
 
   return (
-    <section className="w-full py-12 bg-white overflow-hidden">
+    <section className="w-full py-16 bg-gradient-to-b from-white via-emerald-50/30 to-white overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
-
-          {/* Title */}
+          {/* -------- Title -------- */}
           {data?.title && (
-            <div
-              className="text-2xl md:text-3xl font-semibold text-gray-900 mb-6 text-center"
-              dangerouslySetInnerHTML={{ __html: safeTitle }}
+            <h2
+              className="text-center mb-12 text-4xl font-bold text-gray-900"
+              dangerouslySetInnerHTML={{ __html: data.title }}
             />
           )}
 
-          {/* Scroller */}
+          {/* -------- Scroll Wrapper -------- */}
           <div className="relative overflow-hidden">
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-linear-to-r from-white to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-linear-to-l from-white to-transparent z-10" />
+            {/* Fade overlays */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
             <div className="flex animate-scroll-left hover:[animation-play-state:paused]">
-              {[...companies, ...companies].map((company, idx) => (
-                <div
-                  key={`${company.name}-${idx}`}
-                  className="shrink-0 mx-6 my-3 group"
-                >
+              {[...companies, ...companies].map((company, idx) => {
+                const hasLogo =
+                  typeof company.logo === "string" &&
+                  company.logo.trim().length > 0;
+
+                return (
                   <div
-                    className="
-                      relative flex items-center gap-3 px-5 py-3 rounded-2xl
-                      bg-white/90 border border-gray-200 shadow-sm
-                      hover:shadow-xl transition-all duration-500
-                      hover:scale-110 hover:-translate-y-1
-                    "
+                    key={`${company.name}-${idx}`}
+                    className="shrink-0 mx-5 my-3 group"
                   >
-                    {/* Hover Gradient */}
                     <div
-                      className={`
-                        absolute inset-0 rounded-2xl opacity-0
-                        group-hover:opacity-20
-                        bg-gradient-to-br
-                        ${company.colors || "from-gray-200 to-gray-300"}
-                      `}
-                    />
-
-                    {/* Logo OR Icon */}
-                    <div className="relative z-10 w-14 h-14 flex items-center justify-center">
-                      { typeof company.logo === "string" &&
-  company.logo.trim().length > 0 ? (
-                        <Image
-                          src={company.logo}
-                          alt={company.name}
-                          width={80}
-                          height={80}
-                          className="object-contain rounded-md"
-                        />
-                      ) : (
-                        <div className="transform group-hover:rotate-12 transition-transform">
-                          {getClientIcon(company.icon_key)}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Name */}
-                    <span
-                      className={`
-                        text-sm font-bold whitespace-nowrap relative z-10
-                        bg-gradient-to-r
-                        ${company.colors || "from-gray-600 to-gray-800"}
-                        bg-clip-text text-transparent
-                      `}
+                      className="
+      relative flex items-center justify-center
+      px-6 py-4 rounded-xl
+      bg-white border border-gray-200
+      shadow-sm hover:shadow-lg
+      transition-all duration-300
+      hover:scale-105
+      min-w-[180px]
+      h-[50px]
+    "
                     >
-                      {company.name}
-                    </span>
+                      {/* Hover Gradient */}
+                      <div
+                        className={`
+        absolute inset-0 rounded-xl opacity-0
+        group-hover:opacity-20
+        bg-gradient-to-br
+        ${company.colors || "from-gray-200 to-gray-300"}
+        transition-opacity duration-300
+      `}
+                      />
+
+                      {/* Logo OR Icon */}
+                      <div className="relative z-10 flex items-center justify-center w-full h-full">
+                        {typeof company.logo === "string" &&
+                        company.logo.trim().length > 0 ? (
+                          <Image
+                            src={company.logo}
+                            alt={company.name}
+                            width={140}
+                            height={60}
+                            className="object-contain max-h-[30px] w-auto"
+                            unoptimized
+                          />
+                        ) : (
+                          getClientIcon(company.icon_key)
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* Animation */}
+      {/* -------- Animation -------- */}
       <style>{`
         @keyframes scroll-left {
           0% { transform: translateX(0); }
