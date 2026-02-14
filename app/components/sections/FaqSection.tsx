@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import DOMPurify from "dompurify";
+import { useState, useEffect } from "react";
 import {
   ChevronDown,
   Sparkles,
@@ -11,9 +10,7 @@ import {
   Briefcase,
 } from "lucide-react";
 
-/* ----------------------------------
-   TYPES (MATCH BACKEND)
----------------------------------- */
+/* TYPES */
 interface FaqItem {
   question: string;
   answer: string;
@@ -21,15 +18,13 @@ interface FaqItem {
 
 interface FaqSectionProps {
   data: {
-    faq_title: string; // HTML
+    faq_title: string;
     sub_title?: string | null;
     faq_items: FaqItem[];
   };
 }
 
-/* ----------------------------------
-   ICON + COLOR MAP (UI CONCERN)
----------------------------------- */
+/* ICONS */
 const ICONS = [Clock, Briefcase, Award, DollarSign];
 const COLORS = [
   "from-blue-500 to-cyan-500",
@@ -38,14 +33,21 @@ const COLORS = [
   "from-amber-500 to-orange-500",
 ];
 
-/* ----------------------------------
-   COMPONENT
----------------------------------- */
 export default function FaqSection({ data }: FaqSectionProps) {
   const { faq_title, sub_title, faq_items } = data;
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const safeTitle = faq_title ? DOMPurify.sanitize(faq_title) : "";
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [safeTitle, setSafeTitle] = useState<string>("");
+
+  /* SAFE SANITIZE (CLIENT ONLY) */
+  useEffect(() => {
+    if (faq_title) {
+      import("dompurify").then((DOMPurify) => {
+        const purifier = DOMPurify.default;
+        setSafeTitle(purifier.sanitize(faq_title));
+      });
+    }
+  }, [faq_title]);
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -53,10 +55,6 @@ export default function FaqSection({ data }: FaqSectionProps) {
 
   return (
     <section className="relative bg-white py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Decorative blobs */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-blue-100/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-100/40 rounded-full blur-3xl pointer-events-none" />
-
       <div className="relative max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
@@ -97,44 +95,30 @@ export default function FaqSection({ data }: FaqSectionProps) {
                     : "border-gray-100 hover:border-gray-200 shadow-lg"
                 }`}
               >
-                {/* Hover gradient */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-r ${color} opacity-0 group-hover:opacity-5 transition-opacity`}
-                />
-
                 <button
                   type="button"
                   onClick={() => toggleFAQ(idx)}
-                  className="w-full text-left p-4 sm:p-5 flex items-start gap-3 relative z-10"
-                  aria-expanded={isOpen}
+                  className="w-full text-left p-4 sm:p-5 flex items-start gap-3"
                 >
-                  {/* Icon */}
                   <div
-                    className={`w-9 h-9 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center shadow ${
-                      isOpen ? "scale-110" : "group-hover:scale-105"
-                    } transition-transform`}
+                    className={`w-9 h-9 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center shadow`}
                   >
                     <Icon className="w-4 h-4 text-white" />
                   </div>
 
-                  {/* Question */}
                   <div className="flex-1">
                     <h3 className="text-sm sm:text-base font-semibold text-gray-900 mt-2">
                       {faq.question}
                     </h3>
                   </div>
 
-                  {/* Chevron */}
-                  <div
-                    className={`w-7 h-7 mt-1 rounded-lg bg-gray-100 flex items-center justify-center transition-transform ${
-                      isOpen ? "rotate-180 bg-gray-200" : ""
+                  <ChevronDown
+                    className={`w-5 h-5 mt-2 transition-transform ${
+                      isOpen ? "rotate-180" : ""
                     }`}
-                  >
-                    <ChevronDown className="w-4 h-4 text-gray-600" />
-                  </div>
+                  />
                 </button>
 
-                {/* Answer */}
                 <div
                   className={`transition-all duration-300 ${
                     isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
@@ -150,13 +134,6 @@ export default function FaqSection({ data }: FaqSectionProps) {
             );
           })}
         </div>
-
-        {/* CTA */}
-        {/* <div className="mt-10 text-center">
-          <button className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-semibold rounded-lg hover:scale-105 transition-all shadow-lg">
-            Contact Us
-          </button>
-        </div> */}
       </div>
     </section>
   );

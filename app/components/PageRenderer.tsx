@@ -72,7 +72,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
     <div className="min-h-screen bg-white overflow-hidden">
       <Navigation />
       {renderedSections.map((section) => {
-        console.log(section, "section");
+        // console.log(section, "section");
 
         switch (section.section_key) {
           case "hero":
@@ -109,7 +109,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
           case "solutions":
             return <Solutions key={section.id} data={section} />;
           case "jobs":
-            return <JobListings />;
+            return <JobListings key={section.id} />;
           case "faq":
             // Map API structure to FaqSection props
             const faqData = {
