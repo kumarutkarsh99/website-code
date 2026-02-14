@@ -20,6 +20,7 @@ import { useMemo } from "react";
 import MiddleSection from "./sections/MiddleSection";
 import WhyChooseUs from "./sections/WhyChooseUs";
 import Solutions from "./sections/SolutionsSection";
+import JobListings from "./sections/JobsListings";
 
 interface PageRendererProps {
   page: {
@@ -107,6 +108,8 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
             return <WhyChooseUs key={section.id} data={section} />;
           case "solutions":
             return <Solutions key={section.id} data={section} />;
+          case "jobs":
+            return <JobListings />;
           case "faq":
             // Map API structure to FaqSection props
             const faqData = {
