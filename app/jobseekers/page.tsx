@@ -22,6 +22,7 @@ export default function JobSeekers() {
     message: "",
   });
 
+  const [resume, setResume] = useState<File | null>(null); // ✅ added
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"success" | "error" | "">("");
 
@@ -32,25 +33,36 @@ export default function JobSeekers() {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setResume(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setStatus("");
 
     try {
+      const form = new FormData(); // ✅ switched to FormData
+
+      form.append("first_name", formData.firstName);
+      form.append("last_name", formData.lastName);
+      form.append("email", formData.email);
+      form.append("phone", formData.phone);
+      form.append("company_name", formData.company);
+      form.append("role_to_hire", formData.role);
+      form.append("requirements", formData.message);
+      form.append("source", "Website – jobseekers Page");
+
+      if (resume) {
+        form.append("resume", resume);
+      }
+
       const response = await fetch(`${API_BASE_URL}/leads/contact`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          company_name: formData.company,
-          role_to_hire: formData.role,
-          requirements: formData.message,
-          source: "Website – jobseekers Page",
-        }),
+        body: form, // ❗ no JSON headers for file upload
       });
 
       if (!response.ok) throw new Error("API Error");
@@ -65,6 +77,7 @@ export default function JobSeekers() {
         role: "",
         message: "",
       });
+      setResume(null);
     } catch (err) {
       console.error("Lead submit error:", err);
       setStatus("error");
@@ -92,7 +105,9 @@ export default function JobSeekers() {
             {/* Names */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="firstName" className="text-gray-700">First Name</Label>
+                <Label htmlFor="firstName" className="text-gray-700">
+                  First Name
+                </Label>
                 <div className="relative mt-1">
                   <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -109,7 +124,9 @@ export default function JobSeekers() {
               </div>
 
               <div>
-                <Label htmlFor="lastName" className="text-gray-700">Last Name</Label>
+                <Label htmlFor="lastName" className="text-gray-700">
+                  Last Name
+                </Label>
                 <div className="relative mt-1">
                   <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -129,7 +146,9 @@ export default function JobSeekers() {
             {/* Email & Phone */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="email" className="text-gray-700">Email</Label>
+                <Label htmlFor="email" className="text-gray-700">
+                  Email
+                </Label>
                 <div className="relative mt-1">
                   <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -147,7 +166,9 @@ export default function JobSeekers() {
               </div>
 
               <div>
-                <Label htmlFor="phone" className="text-gray-700">Phone</Label>
+                <Label htmlFor="phone" className="text-gray-700">
+                  Phone
+                </Label>
                 <div className="relative mt-1">
                   <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -167,7 +188,9 @@ export default function JobSeekers() {
             {/* Company & Role */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="company" className="text-gray-700">Current Company</Label>
+                <Label htmlFor="company" className="text-gray-700">
+                  Current Company
+                </Label>
                 <div className="relative mt-1">
                   <Building2 className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -183,7 +206,9 @@ export default function JobSeekers() {
               </div>
 
               <div>
-                <Label htmlFor="role" className="text-gray-700">Target Role</Label>
+                <Label htmlFor="role" className="text-gray-700">
+                  Target Role
+                </Label>
                 <div className="relative mt-1">
                   <FileText className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
@@ -202,7 +227,9 @@ export default function JobSeekers() {
 
             {/* Message */}
             <div>
-              <Label htmlFor="message" className="text-gray-700">Additional Details</Label>
+              <Label htmlFor="message" className="text-gray-700">
+                Additional Details
+              </Label>
               <Textarea
                 id="message"
                 rows={5}
@@ -214,6 +241,54 @@ export default function JobSeekers() {
                            placeholder:text-gray-400
                            focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
               />
+            </div>
+
+            {/* Resume Upload */}
+            <div>
+              <Label htmlFor="resume" className="text-gray-700">
+                Attach Resume
+              </Label>
+
+              <div className="mt-2 relative">
+                <label
+                  htmlFor="resume"
+                  className="flex flex-col items-center justify-center w-full px-6 py-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-white hover:border-blue-500 hover:bg-blue-50 transition-all duration-200"
+                >
+                  <FileText className="w-8 h-8 text-gray-400 mb-2" />
+
+                  <span className="text-sm text-gray-600">
+                    Click to upload or drag and drop
+                  </span>
+
+                  <span className="text-xs text-gray-400 mt-1">
+                    PDF, DOC, DOCX (Max 5MB)
+                  </span>
+
+                  <Input
+                    id="resume"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                    required
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              {resume && (
+                <div className="mt-3 flex items-center justify-between bg-gray-50 border border-gray-200 rounded-md px-4 py-2">
+                  <span className="text-sm text-gray-700 truncate">
+                    {resume.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setResume(null)}
+                    className="text-red-500 text-xs font-medium hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
 
             <Button
