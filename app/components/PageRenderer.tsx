@@ -72,7 +72,7 @@ const PageRenderer: React.FC<PageRendererProps> = ({ page }) => {
     <div className="min-h-screen bg-white overflow-hidden">
       <Navigation />
       {renderedSections.map((section) => {
-        console.log(section, "section");
+        // console.log(section, "section");
 
         switch (section.section_key) {
           case "hero":
