@@ -33,12 +33,14 @@ interface JobsResponse {
   page: number;
   limit: number;
 }
+interface JobSectionProps {
+  data?: {};
+}
 
 /* ===========================
    COMPONENT
 =========================== */
-
-const JobListings: React.FC = () => {
+const JobListings: React.FC<JobSectionProps> = ({ data }) => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -58,10 +60,11 @@ const JobListings: React.FC = () => {
 
       try {
         const res = await fetch(
-          `http://72.61.229.100:3001/jobs?page=${page}&limit=${limit}`,
+          `http://72.61.229.100:3001/jobs`,
         );
 
         const data: JobsResponse = await res.json();
+        console.log(data)
 
         setJobs(data.data);
         setTotal(data.total);

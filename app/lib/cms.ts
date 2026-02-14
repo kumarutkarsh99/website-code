@@ -24,7 +24,7 @@ async function fetchFromCMS<T>(
   if (revalidate !== undefined) {
     fetchOptions.next = { revalidate };
   }
-
+console.log(`${API_URL}${endpoint}`)
   const res = await fetch(`${API_URL}${endpoint}`, fetchOptions);
 
   if (!res.ok) {
