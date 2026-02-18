@@ -1,6 +1,7 @@
 import { getPageData } from "@/app/lib/cms";
 import { notFound } from "next/navigation";
 import PageRenderer from "@/app/components/PageRenderer";
+import Script from "next/script";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -38,5 +39,21 @@ export default async function Page({ params }: PageProps) {
 
   const page = pageData.data.result;
 
-  return <PageRenderer page={page} />;
+  // return <PageRenderer page={page} />;
+  return (
+    <>
+      {/* ✅ Inject scripts from CMS */}
+      {page.scripts?.map((script: string, index: number) => (
+        <Script
+          key={index}
+          id={`cms-script-${index}`}
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: script }}
+        />
+      ))}
+
+      {/* Render page content */}
+      <PageRenderer page={page} />
+    </>
+  );
 }

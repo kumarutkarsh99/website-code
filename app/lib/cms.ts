@@ -5,6 +5,25 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined");
 }
+export interface WebsiteSettings {
+  site_name?: string;
+  meta_description?: string;
+  contact_number?: string;
+  email?: string;
+  address?: string;
+  social_facebook?:string;
+  social_instagram?:string;
+  social_linkedin?:string;
+
+
+
+}
+
+export interface WebsiteSettingsResponse {
+  status: boolean;
+  message: string;
+  result: WebsiteSettings;
+}
 
 type FetchOptions = {
   cache?: RequestCache;
@@ -67,4 +86,25 @@ export function getPageData(slug: string) {
     `/pages/slug/${slug}`,
     { cache: "no-store" }
   );
+
+}
+export async function fetchwebsiteSetting(): Promise<WebsiteSettingsResponse> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/website-settings`, {
+      cache: "no-store", // prevents caching
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch website settings");
+    }
+    return await response.json();
+
+  } catch (error) {
+    console.error("fetchwebsiteSetting error:", error);
+
+    return {
+      status: false,
+      message: "Error fetching settings",
+      result: {},
+    };
+  }
 }
