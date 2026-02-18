@@ -102,16 +102,14 @@ const JobListings: React.FC<JobSectionProps> = () => {
       case "recent":
         filtered.sort(
           (a, b) =>
-            new Date(b.created_at).getTime() -
-            new Date(a.created_at).getTime(),
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         );
         break;
 
       case "oldest":
         filtered.sort(
           (a, b) =>
-            new Date(a.created_at).getTime() -
-            new Date(b.created_at).getTime(),
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
         );
         break;
 
@@ -181,19 +179,16 @@ const JobListings: React.FC<JobSectionProps> = () => {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
-
           {/* HEADER */}
           <div className="mb-10 space-y-6">
-
             <div className="flex flex-col md:flex-row justify-between gap-6">
-
               <div>
-                <h2 className="text-3xl font-bold">
+                <h2 className="text-3xl font-bold text-gray-700">
                   Latest Job Openings
                 </h2>
 
                 {!loading && (
-                  <p className="text-gray-500 text-sm">
+                  <p className="text-gray-500 text-sm mt-1">
                     Page {page} of {totalPages}
                   </p>
                 )}
@@ -201,11 +196,25 @@ const JobListings: React.FC<JobSectionProps> = () => {
 
               {/* SORT */}
               <div className="relative w-56">
-
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl border"
+                  className="
+      w-full
+      appearance-none
+      px-4 pr-10 py-2.5
+      rounded-xl
+      border border-gray-300
+      bg-white
+      text-sm font-medium text-gray-700
+      shadow-sm
+      transition-all duration-200
+      hover:border-gray-400
+      focus:outline-none
+      focus:ring-2 focus:ring-blue-500/20
+      focus:border-blue-500
+      cursor-pointer
+    "
                 >
                   <option value="recent">Most Recent</option>
                   <option value="oldest">Oldest</option>
@@ -213,9 +222,8 @@ const JobListings: React.FC<JobSectionProps> = () => {
                   <option value="salary_low">Salary Low → High</option>
                 </select>
 
-                <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400"/>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-4/5 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
-
             </div>
 
             {/* SEARCH */}
@@ -224,87 +232,67 @@ const JobListings: React.FC<JobSectionProps> = () => {
               placeholder="Search jobs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full lg:w-[60vw] px-4 py-3 border rounded-xl"
+              className="w-full px-4 py-3 border rounded-xl text-gray-700"
             />
-
           </div>
 
           {/* LOADING */}
           {loading && (
-            <div className="text-center py-10">
+            <div className="text-center py-10 text-gray-700">
               Loading jobs...
             </div>
           )}
 
           {/* EMPTY */}
           {!loading && currentJobs.length === 0 && (
-            <div className="text-center py-10">
-              No jobs found
-            </div>
+            <div className="text-center py-10 text-gray-700">No jobs found</div>
           )}
 
           {/* JOB LIST */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
             {currentJobs.map((job) => (
-
               <Card key={job.id}>
-
                 <CardContent className="p-6 space-y-4">
+                  <h3 className="font-bold text-gray-700">{job.title}</h3>
 
-                  <h3 className="font-bold">
-                    {job.title}
-                  </h3>
-
-                  <p className="text-emerald-600">
-                    {job.company_name}
-                  </p>
+                  <p className="text-emerald-600">{job.company_name}</p>
 
                   <div className="text-sm text-gray-600">
-                    <MapPin className="inline w-4 h-4 mr-1"/>
+                    <MapPin className="inline w-4 h-4 mr-1" />
                     {job.location}
                   </div>
 
-                  <div className="flex justify-between text-sm">
-
+                  <div className="flex justify-between text-sm text-gray-700">
                     <span>
-                      <Clock className="inline w-4 h-4 mr-1"/>
+                      <Clock className="inline w-4 h-4 mr-1 " />
                       {job.employment_type}
                     </span>
 
                     <span>
-                      <DollarSign className="inline w-4 h-4 mr-1"/>
+                      <DollarSign className="inline w-4 h-4 mr-1" />
                       {formatSalary(
                         job.salary_min,
                         job.salary_max,
-                        job.currency
+                        job.currency,
                       )}
                     </span>
-
                   </div>
 
                   <div className="flex justify-between">
-
                     <span className="text-xs text-gray-500">
                       {formatDate(job.created_at)}
                     </span>
 
                     <Link href={`/jobs/${job.id}`}>
-                      <Button size="sm">
+                      <Button size="sm" className="text-emerald-600">
                         View
                       </Button>
                     </Link>
-
                   </div>
-
                 </CardContent>
-
               </Card>
-
             ))}
-
           </div>
-
         </div>
       </div>
     </section>
