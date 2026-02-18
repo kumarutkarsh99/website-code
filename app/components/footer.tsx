@@ -89,21 +89,38 @@ export default function Footer() {
           {/* Employers */}
           <div>
             <h4 className="text-lg font-semibold mb-4">For Employers</h4>
+              <ul className="space-y-2 text-slate-300">
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Post a Job</a></li>
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Browse CVs</a></li>
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Pricing</a></li>
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Success Stories</a></li>
+            </ul>
           </div>
 
           {/* Job Seekers */}
           <div>
             <h4 className="text-lg font-semibold mb-4">For Job Seekers</h4>
+             <ul className="space-y-2 text-slate-300">
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Browse Jobs</a></li>
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Upload CV</a></li>
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Career Advice</a></li>
+              <li><a href="#" className="hover:text-teal-400 transition-colors">Salary Guide</a></li>
+            </ul>
           </div>
 
           {/* Newsletter */}
           <div>
             <h4 className="text-lg font-semibold mb-4">Stay Updated</h4>
-
+              <p className="text-slate-300 mb-4">Get the latest job market insights and career tips.</p>
             <div className="flex gap-2">
+              <Input placeholder="Enter your email" className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400" />
+              <Button className="bg-teal-600 hover:bg-teal-700">Subscribe</Button>
+            </div>
+
+            {/* <div className="flex gap-2">
               <Input placeholder="Enter your email" />
               <Button>Subscribe</Button>
-            </div>
+            </div> */}
 
           </div>
 
